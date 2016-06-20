@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- "Mark Favorite", should appear as action button if possible -->
+    <item
+        android:id="@+id/telecommande"
+        android:icon="@drawable/ic_videogame_asset_white_24dp"
+        android:title="telecommande"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/listVocale"
+        android:icon="@drawable/ic_view_list_white_24dp"
+        android:title="liste"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/ic_notifications_white_24dp"
+        android:title="notification"
+        app:showAsAction="ifRoom"/>
+
+</menu>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@color/primary">
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_person_black_24dp"
+        android:background="@android:color/transparent"
+        android:id="@+id/profilBtn"
+        android:contentDescription="profil"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_supervisor_account_black_24dp"
+        android:background="@android:color/transparent"
+        android:id="@+id/adminBtn"
+        android:contentDescription="admin"
+        android:layout_gravity="end"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        android:clickable="false"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="25sp"
+        android:gravity="center_horizontal"
+        android:id="@+id/app_bar_title"
+        android:text=""
+        android:layout_marginStart="20dp"/>
+
+</Toolbar>

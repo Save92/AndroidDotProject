@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sncf.itnovem.dotandroidapplication.ListCommandActivity">
+    <include layout="@layout/app_bar" android:id="@+id/app_bar"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/app_bar"
+        android:id="@+id/commande_container_frame">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="@color/primary_dark"
+        android:elevation="4dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/bottomToolbar"
+        android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="-15dp">
+            <ImageButton
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_videogame_asset_white_24dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="telecommande"
+                android:elevation="2dp"
+                android:id="@+id/telecommandeBtn"/>
+            <ImageButton
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_view_list_white_24dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="liste des commandes"
+                android:elevation="2dp"
+                android:id="@+id/listBtn"/>
+            <ImageButton
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_notifications_white_24dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="mémo"
+                android:elevation="2dp"
+                android:id="@+id/notificationsBtn"/>
+        </LinearLayout>
+    </Toolbar>
+
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="@string/list_commandes_title"-->
+        <!--android:id="@+id/textView13"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="10dp"/>-->
+    <view
+        android:id="@+id/commandesRecycleView"
+        class="android.support.v7.widget.RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/bottomToolbar"
+        android:layout_below="@+id/textView13"
+        android:layout_marginTop="10dp"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+    </FrameLayout>
+</RelativeLayout>
