@@ -64,6 +64,8 @@ public interface DotService {
     Call<JsonObject> actionTélécommande(@Body JsonObject mySettings, @Query("user_token") String token, @Query("user_email") String email);
     @GET("settings/1")
     Call<JsonObject> getSettings(@Query("user_token") String token, @Query("user_email") String email);
+    @POST("/tests/voice")
+    Call<JsonObject> testSarah(@Body JsonObject voice, @Query("user_token") String token, @Query("user_email") String email);
     /**
      * Récupération de la liste des commandes vocales
      */

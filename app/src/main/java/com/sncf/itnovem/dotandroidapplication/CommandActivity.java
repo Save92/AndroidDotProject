@@ -78,8 +78,7 @@ public class CommandActivity extends Activity {
     Boolean room_occupied;
     Boolean screen_guest_enabled;
 
-            // JSON
-    JSONObject json;
+    // JSON
     JsonObject gson;
 
 
@@ -108,10 +107,8 @@ public class CommandActivity extends Activity {
         twitterBtn = (ImageButton) findViewById(R.id.twitterBtn);
         twitterOff = (TextView) findViewById(R.id.textViewTwitterOff);
         twitterOn = (TextView) findViewById(R.id.textViewTwitterOn);
-
-        json = new JSONObject();
         gson = new JsonObject();
-        Log.v("COMAND", json.toString());
+        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
         getSettings();
         muteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +135,10 @@ public class CommandActivity extends Activity {
                 //TODO appel API TEST MODE
                 Log.v(COMMAND, "test name" + CurrentUser.getFirstName());
                 openDialog();
-                Toast.makeText(activity, testText, Toast.LENGTH_SHORT);
+                testText = testText.replaceAll(".", " poin ");
+                gson = new JsonObject();
+                gson.addProperty("text", testText);
+                sendTest(gson);
             }
         });
 
@@ -179,8 +179,27 @@ public class CommandActivity extends Activity {
 
     }
 
+    private void sendTest(JsonObject gson) {
+        Call<JsonObject> call = dotService.testSarah(gson, CurrentUser.getToken(), CurrentUser.getEmail());
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(activity, "Send", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.v(COMMAND, t.toString());
+
+            }
+        });
+    }
+
     private void modifySettings(JsonObject json) {
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
         Call<JsonObject> call = dotService.actionTélécommande(json, CurrentUser.getToken(), CurrentUser.getEmail());
         call.enqueue(new Callback<JsonObject>() {
             @Override
