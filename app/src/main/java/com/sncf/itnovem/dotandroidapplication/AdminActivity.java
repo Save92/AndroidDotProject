@@ -1,6 +1,7 @@
 package com.sncf.itnovem.dotandroidapplication;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.sncf.itnovem.dotandroidapplication.services.API;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,49 +68,73 @@ public class AdminActivity extends AppCompatActivity implements UserRecyclerAdap
     private void getUserList() {
 
         Log.v(TAG, "getUserList");
-        userList = new ArrayList<>();
-        adapter = new UserRecyclerAdapter(activity, userList);
-        userRecyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        call = dotService.getUsers(CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    Log.v(TAG, response.raw().toString());
-                    Log.v(TAG, "body: " +response.body().toString());
-                    JsonArray myList = response.body().get("data").getAsJsonArray();
-                    for(int i = 0; i < myList.size(); i++) {
-                        JsonObject myUserJson = myList.get(i).getAsJsonObject();
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            userList = new ArrayList<>();
+            adapter = new UserRecyclerAdapter(activity, userList);
+            userRecyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            call = dotService.getUsers(CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        Log.v(TAG, response.raw().toString());
+                        Log.v(TAG, "body: " + response.body().toString());
+                        JsonArray myList = response.body().get("data").getAsJsonArray();
+                        for (int i = 0; i < myList.size(); i++) {
+                            JsonObject myUserJson = myList.get(i).getAsJsonObject();
 
-                        Log.v(TAG, "MyUserJson " + myUserJson.toString());
-                        Log.v(TAG, "myUserJson " + myUserJson.get("id").toString());
-                        Log.v(TAG, "myUserJson " + myUserJson.get("attributes").getAsJsonObject().toString());
+                            Log.v(TAG, "MyUserJson " + myUserJson.toString());
+                            Log.v(TAG, "myUserJson " + myUserJson.get("id").toString());
+                            Log.v(TAG, "myUserJson " + myUserJson.get("attributes").getAsJsonObject().toString());
 
-                        User myUser = User.init(myUserJson.get("id").getAsInt(), myUserJson.get("attributes").getAsJsonObject());
-                        userList.add(myUser);
+                            User myUser = User.init(myUserJson.get("id").getAsInt(), myUserJson.get("attributes").getAsJsonObject());
+                            userList.add(myUser);
+                        }
+                        adapter = new UserRecyclerAdapter(activity, userList);
+                        userRecyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        progressBar.setVisibility(View.GONE);
+                        //Log.v(TAG, response.body().getFirstname());
+                    } else {
+                        Toast.makeText(activity, "Error :" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
+
+
+                        progressBar.setVisibility(View.GONE);
                     }
-                    adapter = new UserRecyclerAdapter(activity, userList);
-                    userRecyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
-                    //Log.v(TAG, response.body().getFirstname());
-                } else {
-                    Toast.makeText(activity, "Error :" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(TAG, t.toString());
 
 
                     progressBar.setVisibility(View.GONE);
                 }
-            }
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(TAG, t.toString());
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
 
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
 
-                progressBar.setVisibility(View.GONE);
+                builder.show();
             }
-        });
+            catch(Exception e)
+            {
+                Log.d(TAG, "Show Dialog: "+e.getMessage());
+            }
+        }
 
     }
 
@@ -141,6 +167,7 @@ public class AdminActivity extends AppCompatActivity implements UserRecyclerAdap
         toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.admin_title);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);
         toolbarTop.setNavigationOnClickListener(new View.OnClickListener() {

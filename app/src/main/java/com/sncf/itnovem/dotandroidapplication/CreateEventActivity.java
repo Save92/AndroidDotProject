@@ -1,5 +1,6 @@
 package com.sncf.itnovem.dotandroidapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
@@ -44,6 +45,8 @@ import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 import com.sncf.itnovem.dotandroidapplication.utils.DateUtil;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -210,31 +213,54 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
         } else {
             newNotif = new Notification(title.getText().toString(), null, type.getSelectedItem().toString(), CurrentUser.getCurrentUserId(), description.getText().toString(), durationSeekBar.getProgress(), Integer.parseInt(radioButton.getText().toString()));
         }
-        // Appel list notifications
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        Call<JsonObject> call = dotService.createNotification(newNotif, CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonObject myNotifJson = response.body().get("data").getAsJsonObject();
-                    Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
-                    Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
-                    Intent myIntent = new Intent(activity, NotificationDetailActivity.class);
-                    myIntent.putExtra("notification", myNotif);
-                    startActivity(myIntent);
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            // Appel list notifications
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            Call<JsonObject> call = dotService.createNotification(newNotif, CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        JsonObject myNotifJson = response.body().get("data").getAsJsonObject();
+                        Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
+                        Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+                        Intent myIntent = new Intent(activity, NotificationDetailActivity.class);
+                        myIntent.putExtra("notification", myNotif);
+                        startActivity(myIntent);
 
-                } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorCreateReminders), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorCreateReminders), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(TAG, t.toString());
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(TAG, t.toString());
 
+                }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
-        });
+            catch(Exception e)
+            {
+                Log.d(TAG, "Show Dialog: "+e.getMessage());
+            }
+        }
     }
 
     private void initError() {
@@ -248,17 +274,14 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
 
         durationSeekBar.setMax(max);
         durationSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 seekBarValue.setError(null);
             }
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -359,6 +382,7 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
         });
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.title_activity_create_event);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);

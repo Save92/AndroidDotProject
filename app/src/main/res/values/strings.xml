@@ -28,7 +28,7 @@
     <string name="errorMissingPassword">Le mot de passe doit être saisie</string>
     <string name="errorInvalidEmail">Email non valide</string>
     <string name="errorConnexion">Erreur lors de la connexion</string>
-    <string name="errorNetwork">Veuillez vérifier votre connexion internet</string>
+    <string name="errorNetwork">Internet n\'est pas disponible. Veuillez vérifier votre connexion internet et réessayer</string>
     <string name="errorFirstnameRequired">Le prénom est obligatoire</string>
     <string name="errorLastnameRequired">Le nom est obligatoire</string>
     <string name="errorGetCommands">Erreur lors de la récupération des commandes vocales</string>
@@ -43,6 +43,7 @@
     <string name="loading">Chargement...</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
+    <string name="save">Enregistrer</string>
 
     <!-- Titre page -->
     <string name="image_home">Dot project</string>

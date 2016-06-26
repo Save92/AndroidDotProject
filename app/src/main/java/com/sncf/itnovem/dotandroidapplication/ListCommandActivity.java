@@ -1,5 +1,6 @@
 package com.sncf.itnovem.dotandroidapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
@@ -33,6 +34,8 @@ import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,7 +86,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
             public void onClick(View v) {
                 Intent telecomandeIntent = new Intent(activity, CommandActivity.class);
                 startActivity(telecomandeIntent);
-                activity.finish();
+                finish();
             }
         });
 
@@ -92,7 +95,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
             public void onClick(View v) {
                 Intent listIntent = new Intent(activity, ListCommandActivity.class);
                 startActivity(listIntent);
-                activity.finish();
+                finish();
             }
         });
 
@@ -101,7 +104,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
             public void onClick(View v) {
                 Intent eventIntent = new Intent(activity, EventsActivity.class);
                 startActivity(eventIntent);
-                activity.finish();
+                finish();
             }
         });
         getCommandList();
@@ -109,43 +112,65 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
     }
 
     public void getCommandList() {
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            commandeList = new ArrayList<>();
 
-        commandeList = new ArrayList<>();
+            // Appel list notifications
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            call = dotService.getListCommandes(CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        JsonArray myList = response.body().get("data").getAsJsonArray();
+                        for (int i = 0; i < myList.size() - 1; i++) {
+                            JsonObject myCommandJson = myList.get(i).getAsJsonObject();
 
-        // Appel list notifications
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        call = dotService.getListCommandes(CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonArray myList = response.body().get("data").getAsJsonArray();
-                    for(int i = 0; i < myList.size()-1; i++) {
-                        JsonObject myCommandJson = myList.get(i).getAsJsonObject();
+                            Log.v(TAG, "myCommandJson " + myCommandJson.toString());
 
-                        Log.v(TAG, "myCommandJson " + myCommandJson.toString());
+                            VoiceCommand thisCommand = VoiceCommand.init(myCommandJson);
+                            commandeList.add(thisCommand);
+                        }
+                        adapter = new ListCommandRecyclerAdapter(activity, commandeList);
+                        mRecyclerView.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                        //Log.v(TAG, response.body().getFirstname());
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetSettings), Toast.LENGTH_SHORT).show();
 
-                        VoiceCommand thisCommand = VoiceCommand.init(myCommandJson);
-                       commandeList.add(thisCommand);
+                        progressBar.setVisibility(View.GONE);
                     }
-                    adapter = new ListCommandRecyclerAdapter(activity, commandeList);
-                    mRecyclerView.setAdapter(adapter);
-                    progressBar.setVisibility(View.GONE);
-                    //Log.v(TAG, response.body().getFirstname());
-                } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetSettings), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(TAG, t.toString());
 
                     progressBar.setVisibility(View.GONE);
                 }
-            }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(TAG, t.toString());
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
 
-                progressBar.setVisibility(View.GONE);
+                builder.show();
             }
-        });
+            catch(Exception e)
+            {
+                Log.d(TAG, "Show Dialog: "+e.getMessage());
+            }
+        }
 
     }
 
@@ -184,6 +209,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
         }
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.title_activity_list_command);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
 
         setActionBar(toolbarTop);

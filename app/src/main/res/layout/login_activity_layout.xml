@@ -5,6 +5,14 @@
 
     <include layout="@layout/login_bar" android:id="@+id/login_bar"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logo"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,7 +20,7 @@
         android:text="@string/email_text"
         android:id="@+id/textView2"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="20dp"/>
 
     <EditText
         android:layout_width="match_parent"

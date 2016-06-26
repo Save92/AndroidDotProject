@@ -2,8 +2,9 @@
 <resources>
     <!-- your theme inherits from the material theme -->
     <!--<style name="AppTheme" parent="android:Theme.Material.NoActionBar">-->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-
+    <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
 <!-- theme customizations -->
         <!-- Main theme colors -->
         <!--   your app branding color for the app bar -->

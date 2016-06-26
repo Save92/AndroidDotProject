@@ -126,6 +126,18 @@
         android:layout_below="@+id/newPassword"
         android:layout_alignEnd="@+id/newPasswordText"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/saveBtn"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/newPasswordConfirmText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -141,22 +153,5 @@
             android:scaleType="centerCrop"
             />
     </LinearLayout>
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:id="@+id/saveBtn"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_save_white_36dp"
-            app:layout_anchorGravity="bottom|right|end" />
-
-    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

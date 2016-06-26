@@ -1,5 +1,6 @@
 package com.sncf.itnovem.dotandroidapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,6 +33,8 @@ import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,7 +82,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
             public void onClick(View v) {
                 Intent telecomandeIntent = new Intent(activity, CommandActivity.class);
                 startActivity(telecomandeIntent);
-                activity.finish();
+                finish();
             }
         });
 
@@ -88,7 +91,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
             public void onClick(View v) {
                 Intent listIntent = new Intent(activity, ListCommandActivity.class);
                 startActivity(listIntent);
-                activity.finish();
+                finish();
             }
         });
 
@@ -97,7 +100,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
             public void onClick(View v) {
                 Intent eventIntent = new Intent(activity, EventsActivity.class);
                 startActivity(eventIntent);
-                activity.finish();
+                finish();
             }
         });
 
@@ -112,46 +115,70 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
     }
 
     private void getNotificationList() {
-        notificationList = new ArrayList<>();
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            notificationList = new ArrayList<>();
 
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        call = dotService.getListNotifications(CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    Log.v(TAG, response.raw().toString());
-                    Log.v(TAG, "body: " +response.body().toString());
-                    JsonArray myList = response.body().get("data").getAsJsonArray();
-                    for(int i = 0; i < myList.size(); i++) {
-                        JsonObject myNotifJson = myList.get(i).getAsJsonObject();
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            call = dotService.getListNotifications(CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        Log.v(TAG, response.raw().toString());
+                        Log.v(TAG, "body: " + response.body().toString());
+                        JsonArray myList = response.body().get("data").getAsJsonArray();
+                        for (int i = 0; i < myList.size(); i++) {
+                            JsonObject myNotifJson = myList.get(i).getAsJsonObject();
 
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.toString());
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.get("id").toString());
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").toString());
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").getAsJsonObject().toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("id").toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").getAsJsonObject().toString());
 
-                        Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
-                        notificationList.add(myNotif);
+                            Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
+                            notificationList.add(myNotif);
+                        }
+                        adapter = new RecyclerAdapter(activity, notificationList);
+                        mRecyclerView.setAdapter(adapter);
+
+                        progressBar.setVisibility(View.GONE);
+                        //Log.v(TAG, response.body().getFirstname());
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
+
+                        progressBar.setVisibility(View.GONE);
                     }
-                    adapter = new RecyclerAdapter(activity, notificationList);
-                    mRecyclerView.setAdapter(adapter);
-
-                    progressBar.setVisibility(View.GONE);
-                    //Log.v(TAG, response.body().getFirstname());
-                } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
-
-                    progressBar.setVisibility(View.GONE);
                 }
-            }
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(TAG, t.toString());
-                progressBar.setVisibility(View.GONE);
 
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(TAG, t.toString());
+                    progressBar.setVisibility(View.GONE);
+
+                }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
-        });
+            catch(Exception e)
+            {
+                Log.d(TAG, "Show Dialog: "+e.getMessage());
+            }
+        }
 
 
 
@@ -200,6 +227,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         }
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.title_activity_events);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);
         toolbarTop.setLogo(R.drawable.ic_home_black_24dp);

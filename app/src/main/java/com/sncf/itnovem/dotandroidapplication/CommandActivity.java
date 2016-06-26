@@ -23,6 +23,7 @@ import com.sncf.itnovem.dotandroidapplication.services.API;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class CommandActivity extends Activity {
     private TextView twitterOn;
     private TextView twitterOff;
 
-    private String testText;
+    private String testText = "";
 
 
     private DotService dotService;
@@ -81,15 +82,12 @@ public class CommandActivity extends Activity {
     // JSON
     JsonObject gson;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_command);
         activity = this;
         initToolbars();
-
         muteBtn = (ImageButton) findViewById(R.id.muteBtn);
         sleepText = (TextView) findViewById(R.id.textView9);
         wakeText = (TextView) findViewById(R.id.textViewOutSleep);
@@ -132,10 +130,8 @@ public class CommandActivity extends Activity {
             @Override
             public void onClick(View v) {
                 gson = new JsonObject();
-                //TODO appel API TEST MODE
                 Log.v(COMMAND, "test name" + CurrentUser.getFirstName());
                 openDialog();
-                testText = testText.replaceAll(".", " poin ");
                 gson = new JsonObject();
                 gson.addProperty("text", testText);
                 sendTest(gson);
@@ -200,50 +196,77 @@ public class CommandActivity extends Activity {
     }
 
     private void modifySettings(JsonObject json) {
-        Call<JsonObject> call = dotService.actionTélécommande(json, CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonObject settingsJson = response.body().get("data").getAsJsonObject();
-                    currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
-                    Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
-                    refreshView();
-                } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            Call<JsonObject> call = dotService.actionTélécommande(json, CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        JsonObject settingsJson = response.body().get("data").getAsJsonObject();
+                        currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
+                        Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+                        refreshView();
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(COMMAND, t.toString());
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(COMMAND, t.toString());
 
-            }
-        });
+                }
+            });
+        } else {
+            //TODO DIALOG
+        }
     }
 
     private void getSettings() {
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        Call<JsonObject> call = dotService.getSettings(CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonObject settingsJson = response.body().get("data").getAsJsonObject();
-                    currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
-                    Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
-                    refreshView();
-                } else {
-                    Toast.makeText(activity, "Error :" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            Call<JsonObject> call = dotService.getSettings(CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        JsonObject settingsJson = response.body().get("data").getAsJsonObject();
+                        currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
+                        Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+                        refreshView();
+                    } else {
+                        Toast.makeText(activity, "Error :" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(COMMAND, t.toString());
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(COMMAND, t.toString());
 
+                }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
-        });
+            catch(Exception e)
+            {
+                Log.d("COMMAND", "Show Dialog: "+e.getMessage());
+            }
+        }
     }
 
     private void refreshView() {
@@ -339,6 +362,7 @@ public class CommandActivity extends Activity {
             public void onClick(View v) {
                 Intent telecomandeIntent = new Intent( activity, CommandActivity.class);
                 startActivity(telecomandeIntent);
+                finish();
             }
         });
 
@@ -347,6 +371,7 @@ public class CommandActivity extends Activity {
             public void onClick(View v) {
                 Intent listIntent = new Intent(activity, ListCommandActivity.class);
                 startActivity(listIntent);
+                finish();
             }
         });
 
@@ -355,6 +380,7 @@ public class CommandActivity extends Activity {
             public void onClick(View v) {
                 Intent eventIntent = new Intent(activity, EventsActivity.class);
                 startActivity(eventIntent);
+                finish();
             }
         });
 
@@ -387,6 +413,7 @@ public class CommandActivity extends Activity {
         }
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.title_activity_command);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         View logoView = getToolbarLogoIcon(toolbarTop);
         logoView.setOnClickListener(new View.OnClickListener() {
@@ -416,7 +443,7 @@ public class CommandActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 testText = subEditText.getText().toString();
-                testText = testText.replaceAll("\\.", "");
+                testText = testText.replaceAll("\\.", " poin ");
                 Toast.makeText(activity, testText, Toast.LENGTH_SHORT).show();
             }
         });

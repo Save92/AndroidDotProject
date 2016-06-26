@@ -18,7 +18,7 @@ public class NetworkUtil {
     }
 
     public static boolean checkDeviceConnected(Activity activity) {
-        ConnectivityManager connMgr = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE); // Need permission : android.permission.ACCESS_NETWORK_STATE
+        ConnectivityManager connMgr = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         return (networkInfo != null && networkInfo.isConnected());

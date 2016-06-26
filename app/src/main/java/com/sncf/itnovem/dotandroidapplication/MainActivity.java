@@ -1,6 +1,7 @@
 package com.sncf.itnovem.dotandroidapplication;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,7 @@ import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 import com.sncf.itnovem.dotandroidapplication.utils.SecurityUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -126,50 +128,73 @@ public class MainActivity extends Activity implements RecyclerAdapter.CallbackAd
     }
 
     private void getNotificationList() {
-        notificationList = new ArrayList<>();
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            notificationList = new ArrayList<>();
 
-        // Appel list notifications
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        Log.v(TAG, CurrentUser.getEmail());
-        call = dotService.getListNotifications(CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    Log.v(TAG, response.raw().toString());
-                    Log.v(TAG, "body: " +response.body().toString());
-                    JsonArray myList = response.body().get("data").getAsJsonArray();
-                    Log.v(TAG, myList.toString());
-                    Log.v(TAG, "list SIze + " + myList.size());
-                    for(int i = 0; i < myList.size(); i++) {
-                        JsonObject myNotifJson = myList.get(i).getAsJsonObject();
+            // Appel list notifications
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            Log.v(TAG, CurrentUser.getEmail());
+            call = dotService.getListNotifications(CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        Log.v(TAG, response.raw().toString());
+                        Log.v(TAG, "body: " + response.body().toString());
+                        JsonArray myList = response.body().get("data").getAsJsonArray();
+                        Log.v(TAG, myList.toString());
+                        Log.v(TAG, "list SIze + " + myList.size());
+                        for (int i = 0; i < myList.size(); i++) {
+                            JsonObject myNotifJson = myList.get(i).getAsJsonObject();
 
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.toString());
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.get("id").toString());
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").toString());
-                        Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").getAsJsonObject().toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("id").toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").toString());
+                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").getAsJsonObject().toString());
 
-                        Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
-                        notificationList.add(myNotif);
-                        Log.v(TAG, "myNotif : " + myNotif.getTitle());
+                            Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
+                            notificationList.add(myNotif);
+                            Log.v(TAG, "myNotif : " + myNotif.getTitle());
+                        }
+                        adapter = new RecyclerAdapter(activity, notificationList);
+                        mRecyclerView.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
                     }
-                    adapter = new RecyclerAdapter(activity, notificationList);
-                    mRecyclerView.setAdapter(adapter);
-                    progressBar.setVisibility(View.GONE);
-                } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
                 }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(TAG, t.toString());
+
+                    progressBar.setVisibility(View.GONE);
+
+                }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(TAG, t.toString());
-
-                progressBar.setVisibility(View.GONE);
-
+            catch(Exception e)
+            {
+                Log.d(TAG, "Show Dialog: "+e.getMessage());
             }
-        });
+        }
     }
 
     private void initToolbars() {
@@ -199,6 +224,7 @@ public class MainActivity extends Activity implements RecyclerAdapter.CallbackAd
             });
         }
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         title.setText(R.string.title_activity_main);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);

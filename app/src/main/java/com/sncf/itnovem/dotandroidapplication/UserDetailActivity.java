@@ -1,12 +1,14 @@
 package com.sncf.itnovem.dotandroidapplication;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,6 +23,7 @@ import com.sncf.itnovem.dotandroidapplication.services.API;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
+import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +44,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private EditText password;
     private CheckBox admin;
     private CheckBox approved;
-    private FloatingActionButton saveBtn;
+    private Button saveBtn;
 
     private DotService dotService;
 
@@ -70,7 +73,7 @@ public class UserDetailActivity extends AppCompatActivity {
         admin = (CheckBox) findViewById(R.id.isAdmin);
         approved = (CheckBox) findViewById(R.id.isApproved);
         password = (EditText) findViewById(R.id.passwordValue);
-        saveBtn = (FloatingActionButton) findViewById(R.id.saveBtn);
+        saveBtn = (Button) findViewById(R.id.saveBtn);
         displayCurrentUser();
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,29 +95,52 @@ public class UserDetailActivity extends AppCompatActivity {
         if(password.getText() != null && !password.getText().toString().isEmpty()){
             myUser.setPassword(password.getText().toString().replaceAll("\"", ""));
         }
-        dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-        Call<JsonObject> call = dotService.updateUser(myUser.getUserId(), myUser, CurrentUser.getToken(), CurrentUser.getEmail());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonObject myUserJson = response.body().get("data").getAsJsonObject();
-                    User user = User.init(myUserJson.get("id").getAsInt(), myUserJson.get("attributes").getAsJsonObject());
-                    currentUser = user;
-                    finish();
-                    //Log.v(TAG, response.body().getFirstname());
-                } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetUser), Toast.LENGTH_SHORT).show();
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            Call<JsonObject> call = dotService.updateUser(myUser.getUserId(), myUser, CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        JsonObject myUserJson = response.body().get("data").getAsJsonObject();
+                        User user = User.init(myUserJson.get("id").getAsInt(), myUserJson.get("attributes").getAsJsonObject());
+                        currentUser = user;
+                        finish();
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetUser), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(TAG, t.toString());
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.v(TAG, t.toString());
 
+                }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Info");
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
-        });
+            catch(Exception e)
+            {
+                Log.d(TAG, "Show Dialog: "+e.getMessage());
+            }
         }
+    }
+
 
     private Boolean checkIfValid() {
         int error = 0;
@@ -164,6 +190,7 @@ public class UserDetailActivity extends AppCompatActivity {
         toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.notification_detail_activity);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);
         toolbarTop.findViewById(R.id.profilBtn).setOnClickListener(new View.OnClickListener() {

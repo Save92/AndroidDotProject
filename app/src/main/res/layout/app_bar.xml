@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:gravity="center_horizontal"
         android:id="@+id/app_bar_title"
         android:text=""

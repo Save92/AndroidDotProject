@@ -63,6 +63,7 @@ public class CommandListDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_command_list_detail, container, false);
         title = (TextView) view.findViewById(R.id.title);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         description = (TextView) view.findViewById(R.id.description_content);
         toolbarTop = (Toolbar) super.getActivity().findViewById(R.id.app_bar);
 

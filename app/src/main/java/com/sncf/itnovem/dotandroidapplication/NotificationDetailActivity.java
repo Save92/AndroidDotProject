@@ -198,6 +198,7 @@ public class NotificationDetailActivity extends Activity {
         toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         title.setText(R.string.notification_detail_activity);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);
         toolbarTop.findViewById(R.id.profilBtn).setOnClickListener(new View.OnClickListener() {
