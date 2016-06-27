@@ -5,13 +5,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import com.sncf.itnovem.dotandroidapplication.R;
-import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 
 /**
- * Created by Save92 on 24/03/16.
+ * Created by Journaud Nicolas on 24/03/16.
  */
 public class CustomViewHolder extends RecyclerView.ViewHolder {
     protected TextView textView;

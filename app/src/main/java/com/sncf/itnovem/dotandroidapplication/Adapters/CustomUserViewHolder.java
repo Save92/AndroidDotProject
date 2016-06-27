@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.sncf.itnovem.dotandroidapplication.R;
 
 /**
- * Created by Save92 on 28/05/16.
+ * Created by Journaud Nicolas on 28/05/16.
  */
 public class CustomUserViewHolder extends RecyclerView.ViewHolder {
     protected TextView name;

@@ -7,10 +7,7 @@ import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,7 +15,6 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -26,11 +22,8 @@ import com.google.gson.JsonObject;
 import com.sncf.itnovem.dotandroidapplication.Adapters.RecyclerAdapter;
 import com.sncf.itnovem.dotandroidapplication.Adapters.SimpleDividerItemDecoration;
 import com.sncf.itnovem.dotandroidapplication.Models.Notification;
-import com.sncf.itnovem.dotandroidapplication.Models.User;
 import com.sncf.itnovem.dotandroidapplication.services.API;
-import com.sncf.itnovem.dotandroidapplication.services.APIError;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
-import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
@@ -39,13 +32,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class EventsActivity extends Activity implements RecyclerAdapter.CallbackAdapter {
+    static public String TAG = "EVENTS";
 
-
-    static public String TAG = "LOGINEVENTS";
-
-    private Toolbar toolbar;
-    private Toolbar bottomtoolbar;
     private Activity activity;
     private ImageButton telecommandeBtn;
     private ImageButton listBtn;
@@ -67,9 +59,6 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         initToolbars();
-        telecommandeBtn = (ImageButton) findViewById(R.id.telecommandeBtn);
-        listBtn = (ImageButton) findViewById(R.id.listBtn);
-        notificationsBtn = (ImageButton) findViewById(R.id.notificationsBtn);
         addBtn = (FloatingActionButton) findViewById(R.id.addNotifBtn);
         mRecyclerView = (RecyclerView) findViewById(R.id.notificationsRecycleView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -77,6 +66,87 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         adapter = new RecyclerAdapter(activity, notificationList);
         mRecyclerView.setAdapter(adapter);
 
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addNotif = new Intent(activity, CreateEventActivity.class);
+                startActivity(addNotif);
+            }
+        });
+
+    }
+
+    private void getNotificationList() {
+        if (NetworkUtil.checkDeviceConnected(this)) {
+            notificationList = new ArrayList<>();
+
+            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
+            call = dotService.getListNotifications(CurrentUser.getToken(), CurrentUser.getEmail());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        JsonArray myList = response.body().get("data").getAsJsonArray();
+                        for (int i = 0; i < myList.size(); i++) {
+                            JsonObject myNotifJson = myList.get(i).getAsJsonObject();
+                            Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
+                            notificationList.add(myNotif);
+                        }
+                        adapter = new RecyclerAdapter(activity, notificationList);
+                        mRecyclerView.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle(getString(R.string.info));
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+            catch(Exception e)
+            {}
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initToolbars();
+        // Appel list notifications
+        getNotificationList();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        call.cancel();
+    }
+
+    private void initToolbars() {
+
+        telecommandeBtn = (ImageButton) findViewById(R.id.telecommandeBtn);
+        listBtn = (ImageButton) findViewById(R.id.listBtn);
+        notificationsBtn = (ImageButton) findViewById(R.id.notificationsBtn);
         telecommandeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,102 +174,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
             }
         });
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent addNotif = new Intent(activity, CreateEventActivity.class);
-                startActivity(addNotif);
-            }
-        });
 
-    }
-
-    private void getNotificationList() {
-        if (NetworkUtil.checkDeviceConnected(this)) {
-            notificationList = new ArrayList<>();
-
-            dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-            call = dotService.getListNotifications(CurrentUser.getToken(), CurrentUser.getEmail());
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful()) {
-                        Log.v(TAG, response.raw().toString());
-                        Log.v(TAG, "body: " + response.body().toString());
-                        JsonArray myList = response.body().get("data").getAsJsonArray();
-                        for (int i = 0; i < myList.size(); i++) {
-                            JsonObject myNotifJson = myList.get(i).getAsJsonObject();
-
-                            Log.v(TAG, "MyNotifJson " + myNotifJson.toString());
-                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("id").toString());
-                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").toString());
-                            Log.v(TAG, "MyNotifJson " + myNotifJson.get("attributes").getAsJsonObject().toString());
-
-                            Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
-                            notificationList.add(myNotif);
-                        }
-                        adapter = new RecyclerAdapter(activity, notificationList);
-                        mRecyclerView.setAdapter(adapter);
-
-                        progressBar.setVisibility(View.GONE);
-                        //Log.v(TAG, response.body().getFirstname());
-                    } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
-
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(TAG, t.toString());
-                    progressBar.setVisibility(View.GONE);
-
-                }
-            });
-        } else {
-            try {
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Info");
-
-                builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
-                final android.support.v7.app.AlertDialog alertDialog = builder.create();
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        alertDialog.dismiss();
-                    }
-                });
-
-                builder.show();
-            }
-            catch(Exception e)
-            {
-                Log.d(TAG, "Show Dialog: "+e.getMessage());
-            }
-        }
-
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();  // Always call the superclass method first
-        initToolbars();
-        // Appel list notifications
-        getNotificationList();
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        call.cancel();
-    }
-
-    private void initToolbars() {
         Toolbar toolbarTop = (Toolbar) findViewById(R.id.app_bar);
         if(CurrentUser.getAvatarPath() != null) {
             ImageButton profil = (ImageButton) toolbarTop.findViewById(R.id.profilBtn);
@@ -232,6 +207,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         setActionBar(toolbarTop);
         toolbarTop.setLogo(R.drawable.ic_home_black_24dp);
         View logoView = getToolbarLogoIcon(toolbarTop);
+        logoView.setPadding(0, 0, 15, 0);
         logoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,24 +216,18 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
                 activity.finish();
             }
         });
-
-        Toolbar toolbarBottom = (Toolbar) findViewById(R.id.bottomToolbar);
     }
 
     public static View getToolbarLogoIcon(Toolbar toolbar){
-        //check if contentDescription previously was set
         boolean hadContentDescription = android.text.TextUtils.isEmpty(toolbar.getLogoDescription());
         String contentDescription = String.valueOf(!hadContentDescription ? toolbar.getLogoDescription() : "logoContentDescription");
         toolbar.setLogoDescription(contentDescription);
         ArrayList<View> potentialViews = new ArrayList<View>();
-        //find the view based on it's content description, set programatically or with android:contentDescription
         toolbar.findViewsWithText(potentialViews,contentDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
-        //Nav icon is always instantiated at this point because calling setLogoDescription ensures its existence
         View logoIcon = null;
         if(potentialViews.size() > 0){
             logoIcon = potentialViews.get(0);
         }
-        //Clear content description if not previously present
         if(hadContentDescription)
             toolbar.setLogoDescription(null);
         return logoIcon;
@@ -266,19 +236,8 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
     /** methode de callback appelee quand le clic est declenche dans l adapter */
     @Override
     public void showDetail(Notification f) {
-//        Fragment fragTest = getSupportFragmentManager().findFragmentByTag("detailFrag");
-//        if(fragTest == null) {
-//            CommandListDetailFragment frag = CommandListDetailFragment.newInstance(c);
-//            getSupportFragmentManager().beginTransaction()
-//                    /** Il faudra remplacer les deux drawables suivants pour y mettre tes propres animators */
-//                    .setCustomAnimations(R.anim.slide_in_right, 0, 0,R.anim.slide_out_right)
-//                    .replace(R.id.commande_container_frame, frag, "detailFrag")
-//                    .addToBackStack("detailFrag")
-//                    .commit();
-
         Intent myIntent = new Intent(this, NotificationDetailActivity.class);
         myIntent.putExtra("notification", f);
-
         startActivity(myIntent);
     }
 }

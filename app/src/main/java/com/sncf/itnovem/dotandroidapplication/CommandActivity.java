@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -25,20 +23,17 @@ import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class CommandActivity extends Activity {
 
     private static final String COMMAND = "COMMAND_ACTIVITY";
 
-
-    private Toolbar toolbar;
-    private Toolbar bottomtoolbar;
     private Activity activity;
     private ImageButton telecommandeBtn;
     private ImageButton listBtn;
@@ -69,15 +64,13 @@ public class CommandActivity extends Activity {
 
     private String testText = "";
 
-
     private DotService dotService;
 
-    // Pour les tests
-    Boolean sarahEnabled;
-    Boolean twitter_enabled;
-    Boolean reminders_enabled;
-    Boolean room_occupied;
-    Boolean screen_guest_enabled;
+    private Boolean sarahEnabled;
+    private Boolean twitter_enabled;
+    private Boolean reminders_enabled;
+    private Boolean room_occupied;
+    private Boolean screen_guest_enabled;
 
     // JSON
     JsonObject gson;
@@ -87,7 +80,12 @@ public class CommandActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_command);
         activity = this;
+        initTelecommande();
         initToolbars();
+    }
+
+    private void initTelecommande()
+    {
         muteBtn = (ImageButton) findViewById(R.id.muteBtn);
         sleepText = (TextView) findViewById(R.id.textView9);
         wakeText = (TextView) findViewById(R.id.textViewOutSleep);
@@ -130,7 +128,6 @@ public class CommandActivity extends Activity {
             @Override
             public void onClick(View v) {
                 gson = new JsonObject();
-                Log.v(COMMAND, "test name" + CurrentUser.getFirstName());
                 openDialog();
                 gson = new JsonObject();
                 gson.addProperty("text", testText);
@@ -172,7 +169,6 @@ public class CommandActivity extends Activity {
                 modifySettings(gson);
             }
         });
-
     }
 
     private void sendTest(JsonObject gson) {
@@ -181,16 +177,13 @@ public class CommandActivity extends Activity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(activity, "Send", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(activity, getString(R.string.success_send), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v(COMMAND, t.toString());
-
             }
         });
     }
@@ -204,7 +197,6 @@ public class CommandActivity extends Activity {
                     if (response.isSuccessful()) {
                         JsonObject settingsJson = response.body().get("data").getAsJsonObject();
                         currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
-                        Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
                         refreshView();
                     } else {
                         Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
@@ -212,13 +204,26 @@ public class CommandActivity extends Activity {
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(COMMAND, t.toString());
-
-                }
+                public void onFailure(Call<JsonObject> call, Throwable t) {}
             });
         } else {
-            //TODO DIALOG
+            try {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle(getString(R.string.info));
+
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                final android.support.v7.app.AlertDialog alertDialog = builder.create();
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+            catch(Exception e)
+            {}
         }
     }
 
@@ -232,7 +237,6 @@ public class CommandActivity extends Activity {
                     if (response.isSuccessful()) {
                         JsonObject settingsJson = response.body().get("data").getAsJsonObject();
                         currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
-                        Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
                         refreshView();
                     } else {
                         Toast.makeText(activity, "Error :" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
@@ -240,32 +244,26 @@ public class CommandActivity extends Activity {
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(COMMAND, t.toString());
-
-                }
+                public void onFailure(Call<JsonObject> call, Throwable t) { }
             });
         } else {
             try {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Info");
+                builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setMessage(getResources().getString(R.string.errorNetwork));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
                     }
                 });
-
                 builder.show();
             }
             catch(Exception e)
-            {
-                Log.d("COMMAND", "Show Dialog: "+e.getMessage());
-            }
+            {}
         }
     }
 
@@ -275,8 +273,6 @@ public class CommandActivity extends Activity {
         reminders_enabled = currentSettings.getReminders_enabled();
         room_occupied = currentSettings.getRoom_occupied();
         screen_guest_enabled = currentSettings.getScreen_guest_enabled();
-        
-
         switchSarah(sarahEnabled);
         switchTwitter(twitter_enabled);
         switchReminders(reminders_enabled);
@@ -320,7 +316,6 @@ public class CommandActivity extends Activity {
         }
     }
 
-
     private void switchGest(Boolean b) {
         if(b) {
             clientModeBtn.setImageResource(R.drawable.ic_slideshow_white_48dp);
@@ -347,7 +342,7 @@ public class CommandActivity extends Activity {
 
     @Override
     public void onResume() {
-        super.onResume();  // Always call the superclass method first
+        super.onResume();
         initToolbars();
     }
 
@@ -416,6 +411,7 @@ public class CommandActivity extends Activity {
         title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         View logoView = getToolbarLogoIcon(toolbarTop);
+        logoView.setPadding(0, 0, 15, 0);
         logoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -425,8 +421,6 @@ public class CommandActivity extends Activity {
                 activity.finish();
             }
         });
-
-        Toolbar toolbarBottom = (Toolbar) findViewById(R.id.bottomToolbar);
     }
 
     private void openDialog(){
@@ -435,43 +429,36 @@ public class CommandActivity extends Activity {
         final EditText subEditText = (EditText)subView.findViewById(R.id.editTextTest);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Test Sarah");
+        builder.setTitle(getString(R.string.test_sarah));
         builder.setView(subView);
-        AlertDialog alertDialog = builder.create();
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 testText = subEditText.getText().toString();
                 testText = testText.replaceAll("\\.", " poin ");
-                Toast.makeText(activity, testText, Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(CommandActivity.this, "Cancel", Toast.LENGTH_LONG).show();
+                Toast.makeText(CommandActivity.this, R.string.cancel, Toast.LENGTH_LONG).show();
             }
         });
-
         builder.show();
     }
 
     public static View getToolbarLogoIcon(Toolbar toolbar){
-        //check if contentDescription previously was set
         boolean hadContentDescription = android.text.TextUtils.isEmpty(toolbar.getLogoDescription());
         String contentDescription = String.valueOf(!hadContentDescription ? toolbar.getLogoDescription() : "logoContentDescription");
         toolbar.setLogoDescription(contentDescription);
         ArrayList<View> potentialViews = new ArrayList<View>();
-        //find the view based on it's content description, set programatically or with android:contentDescription
         toolbar.findViewsWithText(potentialViews,contentDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
-        //Nav icon is always instantiated at this point because calling setLogoDescription ensures its existence
         View logoIcon = null;
         if(potentialViews.size() > 0){
             logoIcon = potentialViews.get(0);
         }
-        //Clear content description if not previously present
         if(hadContentDescription)
             toolbar.setLogoDescription(null);
         return logoIcon;

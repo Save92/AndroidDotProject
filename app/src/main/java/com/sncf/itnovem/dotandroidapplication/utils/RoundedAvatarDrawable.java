@@ -12,7 +12,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
 /**
- * Created by Save92 on 21/04/16.
+ * Created by Journaud Nicolas on 21/04/16.
  */
 public class RoundedAvatarDrawable extends Drawable {
     private final Bitmap mBitmap;
@@ -31,7 +31,6 @@ public class RoundedAvatarDrawable extends Drawable {
         final BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         mPaint.setShader(shader);
 
-        // NOTE: we assume bitmap is properly scaled to current density
         mBitmapWidth = mBitmap.getWidth();
         mBitmapHeight = mBitmap.getHeight();
     }

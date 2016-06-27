@@ -1,22 +1,25 @@
 package com.sncf.itnovem.dotandroidapplication;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
-import com.sncf.itnovem.dotandroidapplication.Models.Commande;
-import com.sncf.itnovem.dotandroidapplication.Models.Notification;
+import com.sncf.itnovem.dotandroidapplication.Adapters.ListCommandDetailRecyclerAdapter;
+import com.sncf.itnovem.dotandroidapplication.Adapters.SimpleDividerItemDecoration;
 import com.sncf.itnovem.dotandroidapplication.Models.VoiceCommand;
-import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 
+import java.util.ArrayList;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -28,11 +31,12 @@ public class CommandListDetailFragment extends Fragment {
     private Toolbar toolbarTop;
     private VoiceCommand currentCommand;
     private TextView title;
+    private RecyclerView descriptions;
     private TextView description;
     private Fragment fragment;
+    private ListCommandDetailRecyclerAdapter adapter;
 
     public CommandListDetailFragment() {
-        // Required empty public constructor
     }
 
     public static CommandListDetailFragment newInstance(VoiceCommand c)
@@ -45,6 +49,12 @@ public class CommandListDetailFragment extends Fragment {
     }
 
     @Override
+    public void onViewStateRestored(Bundle b) {
+        super.onViewStateRestored(b);
+        initToolbar();
+    }
+
+    @Override
     public void onCreate(Bundle inState)
     {
         super.onCreate(inState);
@@ -52,26 +62,18 @@ public class CommandListDetailFragment extends Fragment {
         if(getArguments() != null) {
             currentCommand = getArguments().getParcelable("command");
         }
+        initToolbar();
     }
 
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_command_list_detail, container, false);
-        title = (TextView) view.findViewById(R.id.title);
-        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
-        description = (TextView) view.findViewById(R.id.description_content);
+    private void initToolbar() {
         toolbarTop = (Toolbar) super.getActivity().findViewById(R.id.app_bar);
-
+        TextView titleBar = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
+        titleBar.setText(currentCommand.getName());
+        titleBar.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setLogo(null);
-        //toolbarTop.setLogo(android.R.color.transparent);
-        toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
-
+        titleBar.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         super.getActivity().setActionBar(toolbarTop);
+        toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
         toolbarTop.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,13 +82,35 @@ public class CommandListDetailFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_out_right, R.anim.slide_out_right, R.anim.slide_out_right, R.anim.slide_out_right).remove(fragment).commit();
             }
         });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initToolbar();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_command_list_detail, container, false);
+        title = (TextView) view.findViewById(R.id.title);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        descriptions = (RecyclerView) view.findViewById(R.id.commandesDetailRecycleView);
+        descriptions.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        descriptions.addItemDecoration(new SimpleDividerItemDecoration(this.getContext()));
+        initToolbar();
         setFragmentInfo();
         return view;
     }
 
     private void setFragmentInfo() {
-            title.setText(currentCommand.getName());
-            description.setText(currentCommand.getDescription());
+        title.setText(currentCommand.getName());
+        ArrayList<String> listDescription;
+        listDescription = currentCommand.getDescription();
+        adapter = new ListCommandDetailRecyclerAdapter(this.getContext(), listDescription);
+        descriptions.setAdapter(adapter);
     }
 
     @Override
@@ -98,5 +122,4 @@ public class CommandListDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
 }

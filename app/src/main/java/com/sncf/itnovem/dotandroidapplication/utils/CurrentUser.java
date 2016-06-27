@@ -5,10 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.IOException;
 
@@ -18,9 +15,9 @@ import com.sncf.itnovem.dotandroidapplication.R;
 
 
 /**
- * Created by Save92 on 30/07/15.
+ * Created by Journaud Nicolas on 30/07/15.
  */
-public class CurrentUser /* implements Parcelable*/ {
+public class CurrentUser {
     private static final String TAG = "CURRENT_USER";
 
     public static final String SESSION_FILENAME = "CurrentUserSession.xml";
@@ -90,20 +87,16 @@ public class CurrentUser /* implements Parcelable*/ {
 
     public static void setCurrentUser(User user){
         CurrentUser.setCurrentUserId(user.getUserId());
-        Log.v(TAG, user.getEmail());
         CurrentUser.setEmail(user.getEmail().replaceAll("\"", ""));
-        Log.v(TAG, CurrentUser.getEmail());
         CurrentUser.setFirstName(user.getFirstname().replaceAll("\"", ""));
         CurrentUser.setLastName(user.getLastname().replaceAll("\"", ""));
         CurrentUser.setCurrentUserId(user.getUserId());
         CurrentUser.setToken(user.getToken().replaceAll("\"", ""));
-        Log.v(TAG, user.getToken());
         if(user.getPassword() != null) {
             CurrentUser.setPassword(user.getPassword().replaceAll("\"", ""));
 
         }
         CurrentUser.setIsApproved(user.getApproved());
-        Log.v(TAG, "admin : " + user.getAdmin());
         CurrentUser.setAdmin(user.getAdmin());
     }
 
@@ -117,7 +110,6 @@ public class CurrentUser /* implements Parcelable*/ {
         // Mise à jour des Préférences si différent de l'existant
         if (session.getInt(USERID_KEY, 0) != CurrentUser.getCurrentUserId()) {
             if (CurrentUser.getEmail() != null && !CurrentUser.getEmail().isEmpty())
-                Log.v(TAG, "email save " + CurrentUser.getEmail());
                 editor.putString(EMAIL_KEY, CurrentUser.getEmail().replaceAll("\"", ""));
             if (CurrentUser.getCurrentUserId() != 0)
                 editor.putInt(USERID_KEY, CurrentUser.getCurrentUserId());
@@ -139,24 +131,7 @@ public class CurrentUser /* implements Parcelable*/ {
             if(CurrentUser.getAdmin() != null) {
                 editor.putBoolean(ADMIN, CurrentUser.getAdmin());
             }
-
             editor.apply();
-
-
-            //Log.v(TAG, "isSuperAdmin : " + CurrentUser.getGod_mode().toString());
-//            if (CurrentUser.getCurrentUserId() != 0)
-//                CurrentUser.setCurrentUser(CurrentUser, true);
-//            if (CurrentUser.getToken() != null) {
-//                Log.v(TAG, "Save token :" + CurrentUser.getToken());
-//                CurrentUser.setToken(CurrentUser.getToken());
-//
-//                Log.v(TAG, "Current token :" + CurrentUser.getToken());
-//            } else {
-//
-//                Log.v(TAG, "getAuthentication_token : " + CurrentUser.getToken());
-
-            //}
-
         }
     }
 
@@ -164,7 +139,6 @@ public class CurrentUser /* implements Parcelable*/ {
 
         session = CurrentUser.context.getSharedPreferences(SESSION_FILENAME, 0);
         Boolean error = true;
-        Log.v(TAG, "getUserByPreferences");
         if(session.getInt(USERID_KEY, 0) == 0) {
             error = false;
         } else {
@@ -216,12 +190,6 @@ public class CurrentUser /* implements Parcelable*/ {
             editor.putInt(USERID_KEY, 0);
             editor.apply();
         }
-
-        Log.v(TAG, "CurrentUser email :" + CurrentUser.getEmail());
-        Log.v(TAG, "CurrentUser first :" + CurrentUser.getFirstName());
-        Log.v(TAG, "CurrentUser last :" + CurrentUser.getLastName());
-        Log.v(TAG, "CurrentUser token :" + CurrentUser.getToken());
-        Log.v(TAG, "CurrentUser avatar :" + CurrentUser.getAvatarPath());
         return  error;
     }
 
@@ -253,7 +221,6 @@ public class CurrentUser /* implements Parcelable*/ {
 
     public static RoundedAvatarDrawable getCurrentAvatar(int size) {
         if (CurrentUser.getAvatarPath() != null && CurrentUser.getAvatarPath().length() != 0) {
-            //RoundedAvatarDrawable img = new RoundedAvatarDrawable();
             Uri uriLoad = Uri.parse("file://" + CurrentUser.getAvatarPath());
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uriLoad);
@@ -268,7 +235,6 @@ public class CurrentUser /* implements Parcelable*/ {
                 RoundedAvatarDrawable img = new RoundedAvatarDrawable(Images.scaleCenterCrop(bitmap, maxHeight, maxWidth));
                 return img;
             } catch (IOException e) {
-                Log.v(TAG, e.toString());
             }
         }
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_person_black_24dp);
@@ -366,43 +332,4 @@ public class CurrentUser /* implements Parcelable*/ {
     public static void setAdmin(Boolean admin) {
         CurrentUser.admin = admin;
     }
-
-
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    // write your object's data to the passed-in Parcel
-//    public void writeToParcel(Parcel out, int flags) {
-//        out.writeString(getEmail());
-//        out.writeString(getAvatarPath());
-//        out.writeString(getFirstName());
-//        out.writeString(getLastName());
-//        out.writeInt(getCurrentUserId());
-//        out.writeString(getToken());
-//        out.writeString(getPassword());
-//    }
-//
-//    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
-//    public static final Creator<CurrentUser> CREATOR = new Creator<CurrentUser>() {
-//        public CurrentUser createFromParcel(Parcel in) {
-//            return new CurrentUser(in);
-//        }
-//
-//        public CurrentUser[] newArray(int size) {
-//            return new CurrentUser[size];
-//        }
-//    };
-//
-//    // example constructor that takes a Parcel and gives you an object populated with it's values
-//    private CurrentUser(Parcel in) {
-//        setEmail(in.readString());
-//        setAvatarPath(in.readString());
-//        setFirstName(in.readString());
-//        setLastName(in.readString());
-//        setCurrentUserId(in.readInt());
-//        setToken(in.readString());
-//        setPassword(in.readString());
-//    }
-
 }

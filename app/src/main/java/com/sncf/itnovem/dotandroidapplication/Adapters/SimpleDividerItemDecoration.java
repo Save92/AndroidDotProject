@@ -10,7 +10,7 @@ import android.view.View;
 import com.sncf.itnovem.dotandroidapplication.R;
 
 /**
- * Created by Save92 on 18/04/16.
+ * Created by Journaud Nicolas on 18/04/16.
  */
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;

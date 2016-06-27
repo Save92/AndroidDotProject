@@ -3,14 +3,17 @@ package com.sncf.itnovem.dotandroidapplication.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+
 /**
- * Created by Save92 on 28/05/16.
+ * Created by Journaud Nicolas on 28/05/16.
  */
 public class VoiceCommand  implements Parcelable {
     private String name;
-    private String description;
+    private ArrayList<String> description;
 
     public VoiceCommand(){
 
@@ -21,11 +24,21 @@ public class VoiceCommand  implements Parcelable {
         if(!myObject.get("name").isJsonNull()) {
             name = myObject.get("name").getAsString();
         }
-
-        return new VoiceCommand(name, myObject.get("description").getAsString());
+        ArrayList<String> descriptions = new ArrayList<>();
+        JsonArray descriptionsJson = new JsonArray();
+        if(myObject.get("description").isJsonArray()) {
+            descriptionsJson = myObject.get("description").getAsJsonArray();
+        } else {
+            descriptionsJson.add(myObject.get("description").getAsString());
+        }
+            for (int i = 0; i < descriptionsJson.size(); i++) {
+            if(!descriptionsJson.get(i).isJsonNull())
+                descriptions.add(descriptionsJson.get(i).getAsString());
+        }
+        return new VoiceCommand(name, descriptions);
     }
 
-    public VoiceCommand(String name, String description) {
+    public VoiceCommand(String name, ArrayList<String> description) {
         setName(name);
         setDescription(description);
     }
@@ -34,13 +47,11 @@ public class VoiceCommand  implements Parcelable {
         return 0;
     }
 
-    // write your object's data to the passed-in Parcel
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(getName());
-        out.writeString(getDescription());
+        out.writeStringList(getDescription());
     }
 
-    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
     public static final Creator<VoiceCommand> CREATOR = new Creator<VoiceCommand>() {
         public VoiceCommand createFromParcel(Parcel in) {
             return new VoiceCommand(in);
@@ -51,10 +62,9 @@ public class VoiceCommand  implements Parcelable {
         }
     };
 
-    // example constructor that takes a Parcel and gives you an object populated with it's values
     private VoiceCommand(Parcel in) {
         setName(in.readString());
-        setDescription(in.readString());
+        in.readStringList(description);
     }
 
     public String getName() {
@@ -65,11 +75,11 @@ public class VoiceCommand  implements Parcelable {
         this.name = name;
     }
 
-    public String getDescription() {
+    public ArrayList<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(ArrayList<String> description) {
         this.description = description;
     }
 }

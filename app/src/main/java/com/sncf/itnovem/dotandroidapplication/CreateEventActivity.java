@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,44 +20,31 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
-import com.codetroopers.betterpickers.datepicker.DatePickerBuilder;
-import com.codetroopers.betterpickers.datepicker.DatePickerDialogFragment;
 import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFragment;
-import com.codetroopers.betterpickers.timepicker.TimePickerBuilder;
-import com.codetroopers.betterpickers.timepicker.TimePickerDialogFragment;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import com.sncf.itnovem.dotandroidapplication.Adapters.CustomOnItemSelectedListener;
 import com.sncf.itnovem.dotandroidapplication.Models.Notification;
 import com.sncf.itnovem.dotandroidapplication.services.API;
-import com.sncf.itnovem.dotandroidapplication.services.APIError;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
-import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
-import com.sncf.itnovem.dotandroidapplication.utils.DateUtil;
 import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class CreateEventActivity extends AppCompatActivity implements CalendarDatePickerDialogFragment.OnDateSetListener, RadialTimePickerDialogFragment.OnTimeSetListener{
-    private static final String TAG = "LOGINCREATE_EVENT";
-
-
+    private static final String TAG = "CREATE_EVENT";
     private static final String FRAG_TAG_DATE_PICKER = "fragment_date_picker_name";
-
     private static final String FRAG_TAG_TIME_PICKER = "timePickerDialogFragment";
-    private Toolbar toolbar;
-    private Toolbar bottomtoolbar;
+
     private Activity activity;
     private ImageButton telecommandeBtn;
     private ImageButton listBtn;
@@ -82,40 +67,12 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO ajouter la priotity
         setContentView(R.layout.activity_create_event);
         activity = this;
         initToolbars();
-        telecommandeBtn = (ImageButton) findViewById(R.id.telecommandeBtn);
-        listBtn = (ImageButton) findViewById(R.id.listBtn);
-        notificationsBtn = (ImageButton) findViewById(R.id.notificationsBtn);
-
         durationSeekBar = (SeekBar) findViewById(R.id.seekBarDuration);
         seekBarValue = (TextView) findViewById(R.id.seekBarValue);
         radiogroup =  (RadioGroup) findViewById(R.id.radioGroupPriority);
-        telecommandeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent telecomandeIntent = new Intent(activity, CommandActivity.class);
-                startActivity(telecomandeIntent);
-            }
-        });
-
-        listBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent listIntent = new Intent(activity, ListCommandActivity.class);
-                startActivity(listIntent);
-            }
-        });
-
-        notificationsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent eventIntent = new Intent(activity, EventsActivity.class);
-                startActivity(eventIntent);
-            }
-        });
         initDate();
         initTextInput();
         initTypeSpinner();
@@ -175,16 +132,16 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                     error = 1;
                 }
                 if(seekBarValue.getText().length() == 0) {
-                    seekBarValue.setError("Durée obligatoire");
+                    seekBarValue.setError(getString(R.string.error_duration));
                     error = 1;
                 }
                 if(type.getSelectedItem() == "Alerte") {
                     if(dateResult.getText().toString().equals("jj/MM/aaaa") || dateResult.getText().length() == 0) {
-                        dateResult.setError("Date obligatoire");
+                        dateResult.setError(getString(R.string.error_date));
                         datePickerBtn.setImageResource(R.drawable.ic_date_range_red_36dp);
                     }
                     if(timeResult.getText().toString().equals("HH:mm") || timeResult.getText().length() == 0) {
-                        timeResult.setError("Heure obligatoire");
+                        timeResult.setError(getString(R.string.error_time));
                         timePickerBtn.setImageResource(R.drawable.ic_access_time_red_36dp);
                     }
                 }
@@ -192,10 +149,9 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                 radioButton = (RadioButton) findViewById(selectedId);
                 if(radioButton == null) {
                     TextView radioText = (TextView) findViewById(R.id.textView14);
-                    radioText.setError("Priotité obligatoire");
+                    radioText.setError(getString(R.string.error_priotity));
                     error = 1;
                 }
-
                 if(error == 0) {
                     saveNotification();
                     finish();
@@ -223,43 +179,36 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                     if (response.isSuccessful()) {
                         JsonObject myNotifJson = response.body().get("data").getAsJsonObject();
                         Notification myNotif = Notification.init(myNotifJson.get("id").getAsInt(), myNotifJson.get("attributes").getAsJsonObject());
-                        Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, getString(R.string.success_created_notif), Toast.LENGTH_SHORT).show();
                         Intent myIntent = new Intent(activity, NotificationDetailActivity.class);
                         myIntent.putExtra("notification", myNotif);
                         startActivity(myIntent);
-
                     } else {
                         Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorCreateReminders), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(TAG, t.toString());
-
-                }
+                public void onFailure(Call<JsonObject> call, Throwable t) {}
             });
         } else {
             try {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Info");
+                builder.setTitle(R.string.info);
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setMessage(getResources().getString(R.string.errorNetwork));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
                     }
                 });
-
                 builder.show();
             }
             catch(Exception e)
-            {
-                Log.d(TAG, "Show Dialog: "+e.getMessage());
-            }
+            {}
         }
     }
 
@@ -271,20 +220,16 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
 
     private void initSeekBar() {
         int max = 60;
-
         durationSeekBar.setMax(max);
         durationSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 seekBarValue.setError(null);
             }
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
                 int step = 5;
                 if (progress < 0) {
 
@@ -292,13 +237,11 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                     progress = 0;
                     seekBar.setProgress(min);
                 }
-
                 progress = ((int) Math.round(progress / step)) * step;
                 seekBar.setProgress(progress);
-                seekBarValue.setText(String.valueOf(progress) + " minutes");
+                seekBarValue.setText(String.valueOf(progress) + getString(R.string.minutes_unit));
             }
         });
-
     }
 
     private void initTypeSpinner(){
@@ -308,16 +251,10 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
         typesList.add("Alerte");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_spinner_item, typesList);
-
         dataAdapter.setDropDownViewResource
                 (android.R.layout.simple_spinner_dropdown_item);
-
         type.setAdapter(dataAdapter);
-
-        // Spinner item selection Listener
         addListenerOnSpinnerItemSelection();
-
-        // Button click Listener
         addListenerOnButton();
     }
 
@@ -335,15 +272,13 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
             timeResult.setVisibility(View.GONE);
             dateLabel.setVisibility(View.GONE);
         }
-
     }
 
     public void addListenerOnSpinnerItemSelection(){
-
         type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if(type.getSelectedItem().toString() == "Alerte") {
+                if(type.getSelectedItem().toString().equals("Alerte")) {
                     displayDate(true);
                 } else {
                     displayDate(false);
@@ -351,22 +286,44 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
+            public void onNothingSelected(AdapterView<?> parentView) {}
 
         });
     }
 
-    //get the selected dropdown list value
-
     public void addListenerOnButton() {
-
         type = (Spinner) findViewById(R.id.spinner);
-
     }
 
     private void initToolbars() {
+        telecommandeBtn = (ImageButton) findViewById(R.id.telecommandeBtn);
+        listBtn = (ImageButton) findViewById(R.id.listBtn);
+        notificationsBtn = (ImageButton) findViewById(R.id.notificationsBtn);
+
+        telecommandeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent telecomandeIntent = new Intent(activity, CommandActivity.class);
+                startActivity(telecomandeIntent);
+            }
+        });
+
+        listBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent listIntent = new Intent(activity, ListCommandActivity.class);
+                startActivity(listIntent);
+            }
+        });
+
+        notificationsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventIntent = new Intent(activity, EventsActivity.class);
+                startActivity(eventIntent);
+            }
+        });
+
         Toolbar toolbarTop = (Toolbar) findViewById(R.id.app_bar_detail);
         if(CurrentUser.getAvatarPath() != null) {
             ImageButton profil = (ImageButton) toolbarTop.findViewById(R.id.profilBtn);
@@ -392,9 +349,6 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                 finish();
             }
         });
-
-
-        Toolbar toolbarBottom = (Toolbar) findViewById(R.id.bottomToolbar);
     }
 
 
@@ -440,7 +394,6 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
 
     @Override
     public void onResume() {
-        // Example of reattaching to the fragment
         super.onResume();
         CalendarDatePickerDialogFragment calendarDatePickerDialogFragment = (CalendarDatePickerDialogFragment) getSupportFragmentManager()
                 .findFragmentByTag(FRAG_TAG_DATE_PICKER);

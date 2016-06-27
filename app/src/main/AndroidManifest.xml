@@ -47,9 +47,6 @@
             android:label="@string/title_activity_update_user"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SpeakToSarahActivity"
-            android:label="@string/title_activity_speak_to_sarah" />
-        <activity
             android:name=".NotificationDetailActivity"
             android:label="@string/notification_detail_activity" />
         <activity android:name=".AdminActivity" />

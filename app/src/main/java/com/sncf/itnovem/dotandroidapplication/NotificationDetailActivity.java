@@ -3,8 +3,6 @@ package com.sncf.itnovem.dotandroidapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,20 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.sncf.itnovem.dotandroidapplication.Models.Notification;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
-import com.sncf.itnovem.dotandroidapplication.utils.DateUtil;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class NotificationDetailActivity extends Activity {
 
-    static public String TAG = "LOGINNOTIFICATION_DETAIL";
+    static public String TAG = "NOTIFICATION_DETAIL";
 
     private Activity activity;
     private Notification currentNotif;
@@ -42,11 +35,8 @@ public class NotificationDetailActivity extends Activity {
     private TextView date_notification_label;
     private TextView priority;
     private ImageView typeLogo;
-    private ImageView displayedLogo;
 
     // bottom toolbar
-    private Toolbar toolbar;
-    private Toolbar bottomtoolbar;
     private ImageButton telecommandeBtn;
     private ImageButton listBtn;
     private ImageButton notificationsBtn;
@@ -58,36 +48,8 @@ public class NotificationDetailActivity extends Activity {
         Intent myIntent = getIntent();
         currentNotif = new Notification();
         currentNotif =  myIntent.getParcelableExtra("notification");
-
         activity = this;
         initToolbars();
-        telecommandeBtn = (ImageButton) findViewById(R.id.telecommandeBtn);
-        listBtn = (ImageButton) findViewById(R.id.listBtn);
-        notificationsBtn = (ImageButton) findViewById(R.id.notificationsBtn);
-
-        telecommandeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent telecomandeIntent = new Intent(activity, CommandActivity.class);
-                startActivity(telecomandeIntent);
-            }
-        });
-
-        listBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent listIntent = new Intent(activity, ListCommandActivity.class);
-                startActivity(listIntent);
-            }
-        });
-
-        notificationsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent eventIntent = new Intent(activity, EventsActivity.class);
-                startActivity(eventIntent);
-            }
-        });
 
         title = (TextView) findViewById(R.id.titre);
         date = (TextView) findViewById(R.id.date_creation);
@@ -102,9 +64,7 @@ public class NotificationDetailActivity extends Activity {
         displayed_ago_label = (TextView) findViewById(R.id.displayed_ago_label);
         displayed_ago = (TextView) findViewById(R.id.displayed_ago_text);
         priority = (TextView) findViewById(R.id.priority);
-
         displayCurrentNotif();
-
     }
 
     private void displayCurrentNotif() {
@@ -184,11 +144,40 @@ public class NotificationDetailActivity extends Activity {
 
     @Override
     public void onResume() {
-        super.onResume();  // Always call the superclass method first
+        super.onResume();
         initToolbars();
     }
 
     private void initToolbars() {
+
+        telecommandeBtn = (ImageButton) findViewById(R.id.telecommandeBtn);
+        listBtn = (ImageButton) findViewById(R.id.listBtn);
+        notificationsBtn = (ImageButton) findViewById(R.id.notificationsBtn);
+
+        telecommandeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent telecomandeIntent = new Intent(activity, CommandActivity.class);
+                startActivity(telecomandeIntent);
+            }
+        });
+
+        listBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent listIntent = new Intent(activity, ListCommandActivity.class);
+                startActivity(listIntent);
+            }
+        });
+
+        notificationsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventIntent = new Intent(activity, EventsActivity.class);
+                startActivity(eventIntent);
+            }
+        });
+
         Toolbar toolbarTop = (Toolbar) findViewById(R.id.app_bar_detail);
         if(CurrentUser.getAvatarPath() != null) {
             ImageButton profil = (ImageButton) toolbarTop.findViewById(R.id.profilBtn);
@@ -214,8 +203,6 @@ public class NotificationDetailActivity extends Activity {
                 finish();
             }
         });
-
-        Toolbar toolbarBottom = (Toolbar) findViewById(R.id.bottomToolbar);
     }
 
 }

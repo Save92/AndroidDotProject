@@ -14,7 +14,7 @@ import com.sncf.itnovem.dotandroidapplication.R;
 import java.util.List;
 
 /**
- * Created by Save92 on 27/05/16.
+ * Created by Journaud Nicolas on 27/05/16.
  */
 public class UserRecyclerAdapter  extends RecyclerView.Adapter<CustomUserViewHolder> {
     private List<User> userItemList;
@@ -40,9 +40,6 @@ public class UserRecyclerAdapter  extends RecyclerView.Adapter<CustomUserViewHol
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_user_row, null);
 
         CustomUserViewHolder viewHolder = new CustomUserViewHolder(view);
-
-        //todo declencher le clickListener sur la row
-        // http://stackoverflow.com/a/29142005
         view.setOnClickListener(clickListener);
         view.setTag(viewHolder);
         return viewHolder;
@@ -52,13 +49,10 @@ public class UserRecyclerAdapter  extends RecyclerView.Adapter<CustomUserViewHol
     public void onBindViewHolder(CustomUserViewHolder holder, int position) {
         User user = userItemList.get(position);
 
-
         //Setting text view title
         holder.name.setText(Html.fromHtml(user.getFirstname()));
         holder.name.setTag(holder);
         holder.itemView.setOnClickListener(clickListener);
-
-
     }
 
     View.OnClickListener clickListener = new View.OnClickListener() {
@@ -73,7 +67,6 @@ public class UserRecyclerAdapter  extends RecyclerView.Adapter<CustomUserViewHol
 
             /** declenchement du callback vers l activity parente */
             if (callback != null) {
-                // il faut tester avec Log.v(...) si le callback n est pas null
                 callback.showDetail(user);
             }
         }

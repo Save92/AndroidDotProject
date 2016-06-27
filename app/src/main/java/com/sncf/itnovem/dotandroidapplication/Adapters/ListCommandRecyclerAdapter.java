@@ -10,15 +10,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import com.google.gson.JsonObject;
-import com.sncf.itnovem.dotandroidapplication.CommandListDetailFragment;
-import com.sncf.itnovem.dotandroidapplication.Models.Commande;
-import com.sncf.itnovem.dotandroidapplication.Models.Notification;
 import com.sncf.itnovem.dotandroidapplication.Models.VoiceCommand;
 import com.sncf.itnovem.dotandroidapplication.R;
 
 /**
- * Created by Save92 on 13/04/16.
+ * Created by Journaud Nicolas on 13/04/16.
  */
 public class ListCommandRecyclerAdapter extends RecyclerView.Adapter<CustomViewHolder>{
     private List<VoiceCommand> commmandeItemList;
@@ -74,7 +70,6 @@ public class ListCommandRecyclerAdapter extends RecyclerView.Adapter<CustomViewH
 
             /** declenchement du callback vers l activity parente */
             if (callback != null) {
-                // il faut tester avec Log.v(...) si le callback n est pas null
                 callback.showDetail(voiceCommand);
             }
         }

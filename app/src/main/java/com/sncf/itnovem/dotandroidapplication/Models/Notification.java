@@ -2,23 +2,13 @@ package com.sncf.itnovem.dotandroidapplication.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.util.Log;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.internal.Streams;
 import com.sncf.itnovem.dotandroidapplication.utils.DateUtil;
 
 /**
- * Created by Save92 on 24/03/16.
+ * Created by Journaud Nicolas on 24/03/16.
  */
-// Rendre parcelable
 public class Notification implements Parcelable{
     public static String TAG = "NOTIFMODEL";
 
@@ -66,13 +56,10 @@ public class Notification implements Parcelable{
 
             this.setTitle(title);
         }
-        Log.v(TAG, "DATE : " +dateNotif);
         if(dateNotif == null) {
             this.setDisplayAt("");
         } else {
             this.setDisplayAt(DateUtil.parseForJsonDate(dateNotif));
-            //this.setDisplayAt(DateUtil.dateFormatLocal.format(dateNotif));
-            //this.setDisplayAt(dateNotif);
         }
         this.setType(type);
         this.setUser_id(ownerId);
@@ -92,17 +79,14 @@ public class Notification implements Parcelable{
         if(dateNotif == null) {
             this.setDisplayAt("");
         } else {
-            //this.setDisplayAt(DateUtil.dateFormatLocal.format(dateNotif));
             this.setDisplayAt(dateNotif);
         }
         this.setType(type);
         this.setUser(owner);
         this.setContent(description);
         this.setDuration(duration);
-//        this.setCreatedAt(DateUtil.dateFormatLocal.format(dateAdded));
         this.setCreatedAt(dateAdded);
         this.setPriority(priority);
-
     }
 
     public Notification(Integer id, String title,String dateNotif, String type, String owner, String description, Integer duration, String dateAdded, Integer priority,Boolean displayed, String displayed_ago) {
@@ -119,7 +103,6 @@ public class Notification implements Parcelable{
         this.setDuration(duration);
         this.setCreatedAt(DateUtil.parseJsonDate(dateAdded));
         this.setPriority(priority);
-
         this.setDisplayed(displayed);
         this.setDisplayed_ago(displayed_ago);
 
@@ -130,7 +113,6 @@ public class Notification implements Parcelable{
         return 0;
     }
 
-    // write your object's data to the passed-in Parcel
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(getId());
         out.writeString(getTitle());
@@ -145,18 +127,15 @@ public class Notification implements Parcelable{
         out.writeString(getDisplayed_ago());
     }
 
-    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
         public Notification createFromParcel(Parcel in) {
             return new Notification(in);
         }
-
         public Notification[] newArray(int size) {
             return new Notification[size];
         }
     };
 
-    // example constructor that takes a Parcel and gives you an object populated with it's values
     private Notification(Parcel in) {
         setId(in.readInt());
         setTitle(in.readString());

@@ -5,25 +5,21 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 /**
- * Created by Save92 on 20/04/16.
+ * Created by Journaud Nicolas on 20/04/16.
  */
 public class FAB_float_on_scroll extends FloatingActionButton.Behavior {
     private static String TAG = "FLOAT";
     public FAB_float_on_scroll(Context context, AttributeSet attrs) {
         super();
-        Log.v(TAG, "onCreate");
     }
 
     @Override
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-        Log.v(TAG, "enter");
-        Log.v(TAG, String.valueOf(dyConsumed));
         //child -> Floating Action Button
         if (dyConsumed > 0) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
@@ -36,7 +32,6 @@ public class FAB_float_on_scroll extends FloatingActionButton.Behavior {
 
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child, View directTargetChild, View target, int nestedScrollAxes) {
-        Log.v(TAG, "onStartNestedScroll");
         return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL;
     }
 }

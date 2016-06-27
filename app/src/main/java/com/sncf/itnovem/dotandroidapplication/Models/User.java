@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 
 /**
- * Created by Save92 on 27/01/16.
+ * Created by Journaud Nicolas on 27/01/16.
  */
 public class User implements Parcelable {
 
@@ -54,7 +54,9 @@ public class User implements Parcelable {
 
     public User(CurrentUser current) {
         this.email = current.getEmail();
-        this.password = current.getPassword();
+        if(!current.getPassword().isEmpty()) {
+            this.password = current.getPassword();
+        }
         this.avatar = current.getAvatarPath();
         this.approved = true;
         this.firstname = current.getFirstName();
@@ -109,7 +111,6 @@ public class User implements Parcelable {
         return 0;
     }
 
-    // write your object's data to the passed-in Parcel
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(getEmail());
         out.writeString(getPassword());
@@ -122,7 +123,6 @@ public class User implements Parcelable {
         out.writeInt((byte) (getAdmin() ? 1 : 0));
     }
 
-    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
     public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel in) {
             return new User(in);
@@ -133,7 +133,6 @@ public class User implements Parcelable {
         }
     };
 
-    // example constructor that takes a Parcel and gives you an object populated with it's values
     private User(Parcel in) {
         setEmail(in.readString());
         setPassword(in.readString());

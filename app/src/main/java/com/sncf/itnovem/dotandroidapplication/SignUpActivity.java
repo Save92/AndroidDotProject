@@ -13,24 +13,23 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sncf.itnovem.dotandroidapplication.Models.User;
 import com.sncf.itnovem.dotandroidapplication.services.API;
-import com.sncf.itnovem.dotandroidapplication.services.APIError;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
-import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
-import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
 import com.sncf.itnovem.dotandroidapplication.utils.SecurityUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class SignUpActivity extends Activity {
 
-    static public String TAG = "LOGINSIGNUP";
+    static public String TAG = "SIGNUP";
 
     private Activity activity;
     private EditText firstname;
@@ -42,7 +41,6 @@ public class SignUpActivity extends Activity {
     private Button signUp;
     private DotService dotService;
     private ProgressDialog progress;
-    private Toast toast;
 
 
     @Override
@@ -54,13 +52,11 @@ public class SignUpActivity extends Activity {
         progress = new ProgressDialog(this);
         progress.setIndeterminateDrawable(getDrawable(R.drawable.circle_progressbar_custom));
         progress.setMessage(getResources().getString(R.string.loading));
-        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         firstname = (EditText) findViewById(R.id.firtsnameText);
         lastname = (EditText) findViewById(R.id.lastnameText);
         email = (EditText) findViewById(R.id.emailText);
         password = (EditText) findViewById(R.id.passwordText);
         passwordConfirm = (EditText) findViewById(R.id.passwordConfirmText);
-
         signUp = (Button) findViewById(R.id.signupBtn);
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,32 +98,27 @@ public class SignUpActivity extends Activity {
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
                     Log.v(TAG, t.toString());
-
                 }
             });
         } else {
             try {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Info");
+                builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setMessage(getResources().getString(R.string.errorNetwork));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
                     }
                 });
-
                 builder.show();
             }
             catch(Exception e)
-            {
-                Log.d(TAG, "Show Dialog: "+e.getMessage());
-            }
+            {}
         }
-
     }
 
     private Boolean isFormValid() {
@@ -151,7 +142,6 @@ public class SignUpActivity extends Activity {
             passwordConfirm.setError(getResources().getString(R.string.errorInvalidConfirmPassword));
             return false;
         }
-
         return true;
     }
 
@@ -159,7 +149,6 @@ public class SignUpActivity extends Activity {
     private boolean isValidEmail(String email) {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();

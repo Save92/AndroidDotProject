@@ -8,14 +8,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,29 +24,28 @@ import android.widget.Toolbar;
 import com.google.gson.JsonObject;
 import com.sncf.itnovem.dotandroidapplication.services.API;
 import com.sncf.itnovem.dotandroidapplication.utils.NetworkUtil;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sncf.itnovem.dotandroidapplication.Models.User;
-import com.sncf.itnovem.dotandroidapplication.services.APIError;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
-import com.sncf.itnovem.dotandroidapplication.services.ErrorUtils;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
 import com.sncf.itnovem.dotandroidapplication.utils.CurrentUser;
 import com.sncf.itnovem.dotandroidapplication.utils.Images;
 import com.sncf.itnovem.dotandroidapplication.utils.RoundedAvatarDrawable;
-import com.sncf.itnovem.dotandroidapplication.utils.SecurityUtils;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class UpdateUserActivity extends Activity {
     private int PICK_IMAGE_REQUEST = 1;
-    private static final String TAG = "LOGINUPDATE_USER";
+    private static final String TAG = "UPDATE_USER";
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -121,51 +117,36 @@ public class UpdateUserActivity extends Activity {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
-                        Log.v(TAG, "sucess");
-                        // use response data and do some fancy stuff :)
                         JsonObject myUserJson = response.body().get("data").getAsJsonObject();
                         User user = User.init(myUserJson.get("id").getAsInt(), myUserJson.get("attributes").getAsJsonObject());
                         CurrentUser.setCurrentUser(user);
                         CurrentUser.saveCurrentUserSession();
-                        //Log.v(TAG, response.body().getFirstname());
                     } else {
-                        Log.v(TAG, response.toString());
-                        Log.v(TAG, response.raw().toString());
-                        Log.v(TAG, response.message().toString());
-                        Log.v(TAG, "" + response.code());
-
-                        Log.v(TAG, response.errorBody().toString());
                         Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorUpdateUser), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(TAG, t.toString());
-
-                }
+                public void onFailure(Call<JsonObject> call, Throwable t) {}
             });
         } else {
             try {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Info");
+                builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setMessage(getResources().getString(R.string.errorNetwork));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
                     }
                 });
-
                 builder.show();
             }
             catch(Exception e)
-            {
-                Log.d(TAG, "Show Dialog: "+e.getMessage());
-            }
+            {}
         }
     }
 
@@ -297,7 +278,6 @@ public class UpdateUserActivity extends Activity {
         avatar.setLayoutParams(layoutParams);
 
         if(CurrentUser.getAvatarPath() != null && CurrentUser.getAvatarPath().length() != 0) {
-
             Uri uriLoad = Uri.parse("file://" + CurrentUser.getAvatarPath());
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriLoad);
@@ -314,9 +294,7 @@ public class UpdateUserActivity extends Activity {
                 avatar.setBackground(img);
                 avatar.setImageBitmap(null);
                 avatar.setMaxHeight(90);
-            } catch (IOException e) {
-                Log.v(TAG, e.toString());
-            }
+            } catch (IOException e) {}
         } else {
             avatar.setImageResource(R.drawable.ic_account_circle_white_48dp);
         }
@@ -346,7 +324,6 @@ public class UpdateUserActivity extends Activity {
             avatarPath = getRealPathFromURI(activity, uri);
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
                 int maxWidth = bitmap.getWidth();
                 int maxHeight = bitmap.getHeight();
                 if(maxHeight > 250) {
@@ -379,8 +356,6 @@ public class UpdateUserActivity extends Activity {
         }
     }
 
-
-
     /**
      * Checks if the app has permission to write to device storage
      *
@@ -401,5 +376,4 @@ public class UpdateUserActivity extends Activity {
             );
         }
     }
-
 }

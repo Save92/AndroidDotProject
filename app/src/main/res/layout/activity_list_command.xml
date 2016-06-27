@@ -69,9 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/bottomToolbar"
-        android:layout_below="@+id/textView13"
-        android:layout_marginTop="10dp"/>
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/bottomToolbar" />
 
         <ProgressBar
             android:id="@+id/progress_bar"

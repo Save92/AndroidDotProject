@@ -3,7 +3,7 @@ package com.sncf.itnovem.dotandroidapplication.Models;
 import com.google.gson.JsonObject;
 
 /**
- * Created by Save92 on 28/05/16.
+ * Created by Journaud Nicolas on 28/05/16.
  */
 public class Settings {
     private Boolean sarah_enabled;

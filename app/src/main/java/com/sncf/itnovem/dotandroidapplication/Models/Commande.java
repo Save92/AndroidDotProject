@@ -4,10 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.JsonObject;
-import com.sncf.itnovem.dotandroidapplication.utils.DateUtil;
 
 /**
- * Created by Save92 on 13/04/16.
+ * Created by Journaud Nicolas on 13/04/16.
  */
 public class Commande implements Parcelable {
     private Integer id;
@@ -45,7 +44,6 @@ public class Commande implements Parcelable {
         return 0;
     }
 
-    // write your object's data to the passed-in Parcel
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(getId());
         out.writeString(getTitle());
@@ -53,7 +51,6 @@ public class Commande implements Parcelable {
         out.writeString(getUserName());
     }
 
-    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
     public static final Creator<Commande> CREATOR = new Creator<Commande>() {
         public Commande createFromParcel(Parcel in) {
             return new Commande(in);
@@ -64,7 +61,6 @@ public class Commande implements Parcelable {
         }
     };
 
-    // example constructor that takes a Parcel and gives you an object populated with it's values
     private Commande(Parcel in) {
         setId(in.readInt());
         setTitle(in.readString());

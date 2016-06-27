@@ -1,32 +1,32 @@
 package com.sncf.itnovem.dotandroidapplication.utils;
 
-import android.util.Base64;
-import android.util.Log;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 /**
- * Classe utilitaire permettant de simplifier la manipulation de m�thodes li�es � la s�curit� (hashage de mot de passe, par exemple) dans l'application.
+ * Created by Journaud Nicolas on 20/04/16.
+ */
+/**
+ * Classe utilitaire permettant de simplifier la manipulation de methodes liees a la securite (hashage de mot de passe, par exemple) dans l'application.
  *
  */
 public class SecurityUtils {
 
     /**
-     * Constructeur privé de la classe.<br />
-     * Il est <i>private</i> pour emp�cher son instanciation.
+     * Constructeur privé de la classe.
+     * Il est private pour empecher son instanciation.
      */
     private SecurityUtils() {
 
     }
 
     /**
-     * M�thode permettant d'hasher une cha�ne de caractères en SHA-256.
+     * Methode permettant d'hasher une chaine de caractères en SHA-256.
      *
      * @param passwordToHash La chaine à hasher.
      *
-     * @return La cha�ne hash�e en SHA-256.
+     * @return La chaane hashee en SHA-256.
      */
     public static String sha256(String passwordToHash) {
         String generatedPassword = null;
@@ -47,30 +47,6 @@ public class SecurityUtils {
 
         return generatedPassword;
     }
-
-    /**
-     * M�thode permettant d'hasher une cha�ne de caractères en SHA-512.
-     *
-     * @param passwordToHash La chaine à hasher.
-     *
-     * @return La cha�ne hash�e en SHA-512.
-     */
-//    public static String sha512(String passwordToHash) {
-//        String generatedPassword = null;
-//
-//        MessageDigest md = null;
-//        String saltedToken = "saltedToken";
-//        try {
-//            md = MessageDigest.getInstance("SHA-512");
-//            md.update(passwordToHash.getBytes());
-//            byte byteData[] = md.digest();
-//            String base64 = Base64.encodeToString(byteData, Base64.NO_WRAP);
-//        } catch (NoSuchAlgorithmException e) {
-//            Log.w("Security", "Could not load MessageDigest: SHA-512");
-//            return "";
-//        }
-//        return generatedPassword;
-//    }
 
     private static String sha512(String passwordToHash) throws NoSuchAlgorithmException {
         String salt = getSalt();

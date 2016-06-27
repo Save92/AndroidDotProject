@@ -3,16 +3,13 @@ package com.sncf.itnovem.dotandroidapplication;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -32,9 +29,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by Journaud Nicolas on 20/04/16.
+ */
 public class UserDetailActivity extends AppCompatActivity {
 
-    static public String TAG = "LOGINUSER_DETAIL";
+    static public String TAG = "USER_DETAIL";
 
     private Activity activity;
     private User currentUser;
@@ -62,7 +62,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        super.onResume();  // Always call the superclass method first
+        super.onResume();
         initToolbars();
     }
 
@@ -110,37 +110,29 @@ public class UserDetailActivity extends AppCompatActivity {
                         Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetUser), Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(TAG, t.toString());
-
-                }
+                public void onFailure(Call<JsonObject> call, Throwable t) {}
             });
         } else {
             try {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Info");
+                builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setMessage(getResources().getString(R.string.errorNetwork));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
                     }
                 });
-
                 builder.show();
             }
             catch(Exception e)
-            {
-                Log.d(TAG, "Show Dialog: "+e.getMessage());
-            }
+            {}
         }
     }
-
 
     private Boolean checkIfValid() {
         int error = 0;
@@ -160,13 +152,11 @@ public class UserDetailActivity extends AppCompatActivity {
             return true;
         }
         return false;
-
     }
 
     private boolean isValidEmail(String email) {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
@@ -208,6 +198,4 @@ public class UserDetailActivity extends AppCompatActivity {
         });
 
     }
-
-
 }

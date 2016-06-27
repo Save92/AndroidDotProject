@@ -1,14 +1,13 @@
 <!-- res/values/styles.xml -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- your theme inherits from the material theme -->
     <!--<style name="AppTheme" parent="android:Theme.Material.NoActionBar">-->
     <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
 <!-- theme customizations -->
         <!-- Main theme colors -->
         <!--   your app branding color for the app bar -->
         <item name="colorPrimary">@color/primary</item>
+
         <!--   darker variant for the status bar and contextual app bars -->
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <!--   theme UI controls like checkboxes and text fields -->
