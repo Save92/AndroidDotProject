@@ -237,7 +237,7 @@ public class CurrentUser {
             } catch (IOException e) {
             }
         }
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_person_black_24dp);
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_account_white_24dp);
         RoundedAvatarDrawable logo = new RoundedAvatarDrawable(Images.scaleCenterCrop(icon, size, size));
         return logo;
     }

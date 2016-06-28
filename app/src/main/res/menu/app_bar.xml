@@ -2,24 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/profil"
-        android:icon="@drawable/ic_person_black_24dp"
+        android:icon="@drawable/ic_account_white_24dp"
         android:title="menu"
         app:showAsAction="ifRoom"/>
 
 </menu>
-
-<!--<Toolbar xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent" android:layout_height="wrap_content"-->
-    <!--android:background="@color/primary">-->
-    <!--<ImageButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/ic_person_black_24dp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:contentDescription="profil"-->
-        <!--android:layout_gravity="right"-->
-        <!--android:layout_marginEnd="20dp"/>-->
-<!--</Toolbar>-->

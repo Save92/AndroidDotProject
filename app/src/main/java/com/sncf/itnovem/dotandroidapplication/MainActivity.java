@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -48,6 +49,7 @@ public class MainActivity extends Activity implements RecyclerAdapter.CallbackAd
     private ProgressBar progressBar;
     private DotService dotService;
     private Call<JsonObject> call;
+    private boolean doubleBackToExit = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,5 +198,21 @@ public class MainActivity extends Activity implements RecyclerAdapter.CallbackAd
             Intent myIntent = new Intent(this, NotificationDetailActivity.class);
             myIntent.putExtra("notification", f);
             startActivity(myIntent);
+    }
+    @Override
+    public void onBackPressed() {
+        if(doubleBackToExit) {
+            super.onBackPressed();
+            return;
         }
+
+        this.doubleBackToExit = true;
+        Toast.makeText(activity, getString(R.string.double_click_for_exit), Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExit = false;
+            }
+        }, 2000);
+    }
 }

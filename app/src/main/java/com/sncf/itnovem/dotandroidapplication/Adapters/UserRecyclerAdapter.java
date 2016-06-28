@@ -6,7 +6,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sncf.itnovem.dotandroidapplication.Models.User;
 import com.sncf.itnovem.dotandroidapplication.R;
@@ -61,9 +60,7 @@ public class UserRecyclerAdapter  extends RecyclerView.Adapter<CustomUserViewHol
             CustomUserViewHolder holder = (CustomUserViewHolder) view.getTag();
 
             int position = holder.getPosition();
-
             User user = userItemList.get(position);
-            Toast.makeText(mContext, user.getFirstname(), Toast.LENGTH_SHORT).show();
 
             /** declenchement du callback vers l activity parente */
             if (callback != null) {

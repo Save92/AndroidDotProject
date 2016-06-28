@@ -5,7 +5,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_person_black_24dp"
+        android:src="@drawable/ic_account_white_24dp"
         android:background="@android:color/transparent"
         android:contentDescription="profil"
         android:layout_gravity="end"
@@ -15,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="22sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:gravity="center_horizontal"
         android:id="@+id/app_bar_title"
         android:text=""

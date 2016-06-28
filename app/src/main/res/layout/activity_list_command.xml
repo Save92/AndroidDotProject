@@ -53,16 +53,6 @@
                 android:id="@+id/notificationsBtn"/>
         </LinearLayout>
     </Toolbar>
-
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
-        <!--android:text="@string/list_commandes_title"-->
-        <!--android:id="@+id/textView13"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="10dp"/>-->
     <view
         android:id="@+id/commandesRecycleView"
         class="android.support.v7.widget.RecyclerView"

@@ -6,7 +6,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -77,8 +76,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<CustomViewHolder>{
             int position = holder.getPosition();
 
             Notification notif = notificationItemList.get(position);
-
-            Toast.makeText(mContext, notif.getTitle(), Toast.LENGTH_SHORT).show();
             if (callback != null) {
                 callback.showDetail(notif);
             }

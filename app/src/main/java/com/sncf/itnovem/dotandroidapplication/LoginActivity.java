@@ -47,6 +47,7 @@ public class LoginActivity extends Activity {
     private DotService dotService;
     private Activity activity;
     private SharedPreferences session;
+    private CurrentUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login_activity_layout);
         activity = this;
         session = getSharedPreferences(CurrentUser.SESSION_FILENAME, MODE_PRIVATE);
+        currentUser = CurrentUser.getInstance(getApplicationContext());
         toolbar = (android.widget.Toolbar) findViewById(R.id.login_bar);
 
         TextView title = (TextView) toolbar.findViewById(R.id.app_bar_title);

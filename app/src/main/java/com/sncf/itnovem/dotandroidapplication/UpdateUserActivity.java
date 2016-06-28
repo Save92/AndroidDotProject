@@ -296,7 +296,7 @@ public class UpdateUserActivity extends Activity {
                 avatar.setMaxHeight(90);
             } catch (IOException e) {}
         } else {
-            avatar.setImageResource(R.drawable.ic_account_circle_white_48dp);
+            avatar.setImageResource(R.drawable.account_circle_fushia);
         }
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override

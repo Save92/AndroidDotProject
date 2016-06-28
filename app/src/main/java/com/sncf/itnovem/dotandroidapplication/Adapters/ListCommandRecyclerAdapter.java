@@ -6,7 +6,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -66,8 +65,6 @@ public class ListCommandRecyclerAdapter extends RecyclerView.Adapter<CustomViewH
             int position = holder.getPosition();
 
             VoiceCommand voiceCommand = commmandeItemList.get(position);
-            Toast.makeText(mContext, voiceCommand.getName(), Toast.LENGTH_SHORT).show();
-
             /** declenchement du callback vers l activity parente */
             if (callback != null) {
                 callback.showDetail(voiceCommand);

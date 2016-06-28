@@ -386,7 +386,7 @@ public class CommandActivity extends Activity {
             profil.setImageResource(0);
         }
         setActionBar(toolbarTop);
-        toolbarTop.setLogo(R.drawable.ic_home_black_24dp);
+        toolbarTop.setLogo(R.drawable.ic_home_white_36dp);
         toolbarTop.findViewById(R.id.profilBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

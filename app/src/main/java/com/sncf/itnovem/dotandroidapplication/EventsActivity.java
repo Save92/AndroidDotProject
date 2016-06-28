@@ -205,7 +205,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);
-        toolbarTop.setLogo(R.drawable.ic_home_black_24dp);
+        toolbarTop.setLogo(R.drawable.ic_home_white_36dp);
         View logoView = getToolbarLogoIcon(toolbarTop);
         logoView.setPadding(0, 0, 15, 0);
         logoView.setOnClickListener(new View.OnClickListener() {

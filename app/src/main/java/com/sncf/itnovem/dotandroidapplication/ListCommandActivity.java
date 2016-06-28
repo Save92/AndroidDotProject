@@ -205,7 +205,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
         toolbarTop.setNavigationIcon(null);
 
         setActionBar(toolbarTop);
-        toolbarTop.setLogo(R.drawable.ic_home_black_24dp);
+        toolbarTop.setLogo(R.drawable.ic_home_white_36dp);
 
         View logoView = getToolbarLogoIcon(toolbarTop);
         logoView.setPadding(0, 0, 15, 0);
