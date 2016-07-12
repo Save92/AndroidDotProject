@@ -2,9 +2,9 @@ package com.sncf.itnovem.dotandroidapplication;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,19 +86,20 @@ public class SignUpActivity extends Activity {
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
                         progress.dismiss();
-                            JsonObject myUser = response.body().get("data").getAsJsonObject();
-                            Toast.makeText(activity, "User created", Toast.LENGTH_SHORT).show();
-                        //TODO passer les infos au login
-                            finish();
+                        JsonObject myUser = response.body().get("data").getAsJsonObject();
+                        User user = User.init(myUser.get("id").getAsInt(),myUser.get("attributes").getAsJsonObject(), password.getText().toString());
+                        Toast.makeText(activity, getString(R.string.user_created), Toast.LENGTH_SHORT).show();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("user",user);
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorSignUp), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_sign_up), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v(TAG, t.toString());
-                }
+                public void onFailure(Call<JsonObject> call, Throwable t) {}
             });
         } else {
             try {
@@ -106,7 +107,7 @@ public class SignUpActivity extends Activity {
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -123,23 +124,23 @@ public class SignUpActivity extends Activity {
 
     private Boolean isFormValid() {
         if(firstname.getText() == null || firstname.getText().length() == 0) {
-            firstname.setError(getResources().getString(R.string.errorFirstnameRequired));
+            firstname.setError(getResources().getString(R.string.error_firstname_required));
             return false;
         }
         if(lastname.getText() == null || lastname.getText().length() == 0) {
-            lastname.setError(getResources().getString(R.string.errorLastnameRequired));
+            lastname.setError(getResources().getString(R.string.error_lastname_required));
             return false;
         }
         if(!isValidEmail(email.getText().toString())) {
-            email.setError(getResources().getString(R.string.errorInvalidEmail));
+            email.setError(getResources().getString(R.string.error_invalid_email));
             return false;
         }
         if(!isValidPassword(password.getText().toString())) {
-            password.setError(getResources().getString(R.string.errorInvalidPassword));
+            password.setError(getResources().getString(R.string.error_invalid_password));
             return false;
         } else if(!isSamePassword(password.getText().toString(), passwordConfirm.getText().toString())) {
-            password.setError(getResources().getString(R.string.errorInvalidConfirmPassword));
-            passwordConfirm.setError(getResources().getString(R.string.errorInvalidConfirmPassword));
+            password.setError(getResources().getString(R.string.error_invalid_confirm_password));
+            passwordConfirm.setError(getResources().getString(R.string.error_invalid_confirm_password));
             return false;
         }
         return true;
@@ -170,4 +171,11 @@ public class SignUpActivity extends Activity {
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        finish();
+    }
 }

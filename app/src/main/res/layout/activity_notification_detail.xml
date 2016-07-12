@@ -1,275 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sncf.itnovem.dotandroidapplication.NotificationDetailActivity">
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.sncf.itnovem.dotandroidapplication.NotificationDetailActivity">
 
-
-    <include layout="@layout/app_bar_detail" android:id="@+id/app_bar_detail"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/title_label"
-        android:id="@+id/titreLabel"
-        android:layout_below="@+id/app_bar_detail"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"/>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold"
-        android:text=""
-        android:id="@+id/titre"
-        android:layout_alignBaseline="@+id/titreLabel"
-        android:layout_toEndOf="@+id/titreLabel"
-        android:layout_marginStart="5dp"
-        android:textAlignment="center"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/type_label"
-        android:id="@+id/typeLabel"
-        android:layout_below="@+id/titreLabel"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/typeLogo"
-        android:layout_toEndOf="@+id/typeLabel"
-        android:layout_alignTop="@+id/typeLabel"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="7dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Large Text"
-        android:id="@+id/type"
-        android:layout_alignBottom="@+id/typeLabel"
-        android:layout_toEndOf="@+id/typeLogo"
-        android:layout_marginStart="5dp"/>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/date_label"
-        android:id="@+id/dateCreationLabel"
-        android:layout_below="@+id/typeLabel"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Large Text"
-        android:id="@+id/date_creation"
-        android:layout_alignBottom="@+id/dateCreationLabel"
-        android:layout_toEndOf="@+id/dateCreationLabel"
-        android:layout_marginStart="5dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/displayed_label"
-        android:id="@+id/displayed_label"
-        android:layout_below="@+id/dateCreationLabel"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Large Text"
-        android:id="@+id/displayed_text"
-        android:layout_alignBottom="@+id/displayed_label"
-        android:layout_toEndOf="@+id/displayed_label"
-        android:layout_marginStart="5dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/displayed_ago_label"
-        android:id="@+id/displayed_ago_label"
-        android:layout_below="@+id/displayed_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="15dp"
-        android:visibility="gone"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Large Text"
-        android:id="@+id/displayed_ago_text"
-        android:layout_alignBottom="@+id/displayed_ago_label"
-        android:layout_toEndOf="@+id/displayed_ago_label"
-        android:layout_marginStart="5dp"
-        android:visibility="gone"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/date_notif_label"
-        android:id="@+id/date_notification_label"
-        android:layout_below="@+id/displayed_ago_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/date_notif"
-        android:layout_alignBottom="@+id/date_notification_label"
-        android:layout_toEndOf="@+id/date_notification_label"
-        android:layout_marginStart="5dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/duration_label"
-        android:id="@+id/duration_label"
-        android:layout_below="@+id/date_notification_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/duration"
-        android:layout_alignBottom="@+id/duration_label"
-        android:layout_toEndOf="@+id/duration_label"
-        android:layout_marginStart="5dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/priority"
-        android:id="@+id/priority_label"
-        android:layout_alignBottom="@+id/duration"
-        android:layout_toEndOf="@+id/duration"
-        android:layout_marginStart="15dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/priority"
-        android:layout_alignBottom="@+id/priority_label"
-        android:layout_toEndOf="@+id/priority_label"
-        android:layout_marginStart="5dp" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/owner_label"
-        android:id="@+id/owner_label"
-        android:layout_below="@+id/priority_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/owner_name"
-        android:layout_alignBottom="@+id/owner_label"
-        android:layout_toEndOf="@+id/owner_label"
-        android:layout_marginStart="5dp" />
-
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/description_label"
-        android:id="@+id/description_label"
-        android:layout_below="@+id/owner_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/description"
-        android:layout_below="@+id/description_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="3dp"
-        android:layout_above="@+id/bottomToolbar"
-        android:layout_alignParentEnd="true"
-        android:maxLines="4"/>
-
-    <Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:background="@color/primary_dark"
-        android:elevation="4dp"
-        android:layout_gravity="bottom"
-        android:id="@+id/bottomToolbar"
-        android:layout_alignParentBottom="true">
-        <LinearLayout
+        <include layout="@layout/app_bar_detail" android:id="@+id/app_bar_detail"/>
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="-15dp">
-            <ImageButton
-                android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/app_bar_detail"
+            android:layout_above="@+id/bottomToolbar">
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:context="com.sncf.itnovem.dotandroidapplication.NotificationDetailActivity">
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_videogame_asset_white_24dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="telecommande"
-                android:elevation="2dp"
-                android:id="@+id/telecommandeBtn"/>
-            <ImageButton
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_view_list_white_24dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="liste des commandes"
-                android:elevation="2dp"
-                android:id="@+id/listBtn"/>
-            <ImageButton
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_notifications_white_24dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="mémo"
-                android:elevation="2dp"
-                android:id="@+id/notificationsBtn"/>
-        </LinearLayout>
-    </Toolbar>
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/title_label"
+                android:id="@+id/titreLabel"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="20dp"/>
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold"
+                android:text=""
+                android:id="@+id/titre"
+                android:layout_alignBaseline="@+id/titreLabel"
+                android:layout_toEndOf="@+id/titreLabel"
+                android:layout_marginStart="5dp"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/type_label"
+                android:id="@+id/typeLabel"
+                android:layout_below="@+id/titreLabel"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="20dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/typeLogo"
+                android:layout_toEndOf="@+id/typeLabel"
+                android:layout_alignTop="@+id/typeLabel"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Large Text"
+                android:id="@+id/type"
+                android:layout_alignBottom="@+id/typeLabel"
+                android:layout_toEndOf="@+id/typeLogo"
+                android:layout_marginStart="5dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/date_label"
+                android:id="@+id/dateCreationLabel"
+                android:layout_below="@+id/typeLabel"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Large Text"
+                android:id="@+id/date_creation"
+                android:layout_alignBottom="@+id/dateCreationLabel"
+                android:layout_toEndOf="@+id/dateCreationLabel"
+                android:layout_marginStart="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/displayed_label"
+                android:id="@+id/displayed_label"
+                android:layout_below="@+id/dateCreationLabel"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Large Text"
+                android:id="@+id/displayed_text"
+                android:layout_alignBottom="@+id/displayed_label"
+                android:layout_toEndOf="@+id/displayed_label"
+                android:layout_marginStart="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/displayed_ago_label"
+                android:id="@+id/displayed_ago_label"
+                android:layout_below="@+id/displayed_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Large Text"
+                android:id="@+id/displayed_ago_text"
+                android:layout_alignBottom="@+id/displayed_ago_label"
+                android:layout_toEndOf="@+id/displayed_ago_label"
+                android:layout_marginStart="5dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/date_notif_label"
+                android:id="@+id/date_notification_label"
+                android:layout_below="@+id/displayed_ago_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/date_notif"
+                android:layout_alignBottom="@+id/date_notification_label"
+                android:layout_toEndOf="@+id/date_notification_label"
+                android:layout_marginStart="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/duration_label"
+                android:id="@+id/duration_label"
+                android:layout_below="@+id/date_notification_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/duration"
+                android:layout_alignBottom="@+id/duration_label"
+                android:layout_toEndOf="@+id/duration_label"
+                android:layout_marginStart="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/priority"
+                android:id="@+id/priority_label"
+                android:layout_alignBottom="@+id/duration"
+                android:layout_toEndOf="@+id/duration"
+                android:layout_marginStart="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/priority"
+                android:layout_alignBottom="@+id/priority_label"
+                android:layout_toEndOf="@+id/priority_label"
+                android:layout_marginStart="5dp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/owner_label"
+                android:id="@+id/owner_label"
+                android:layout_below="@+id/priority_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/owner_name"
+                android:layout_alignBottom="@+id/owner_label"
+                android:layout_toEndOf="@+id/owner_label"
+                android:layout_marginStart="5dp" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/description_label"
+                android:id="@+id/description_label"
+                android:layout_below="@+id/owner_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/description"
+                android:layout_below="@+id/description_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="3dp"
+                android:layout_alignParentEnd="true"
+                android:maxLines="4"/>
+            </RelativeLayout>
+        </ScrollView>
+        <Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@color/primary_dark"
+            android:elevation="4dp"
+            android:layout_gravity="bottom"
+            android:id="@+id/bottomToolbar"
+            android:layout_alignParentBottom="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="-15dp">
+                <ImageButton
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_videogame_asset_white_24dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="telecommande"
+                    android:elevation="2dp"
+                    android:id="@+id/telecommandeBtn"/>
+                <ImageButton
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_view_list_white_24dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="liste des commandes"
+                    android:elevation="2dp"
+                    android:id="@+id/listBtn"/>
+                <ImageButton
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_notifications_white_24dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="mémo"
+                    android:elevation="2dp"
+                    android:id="@+id/notificationsBtn"/>
+            </LinearLayout>
+        </Toolbar>
 </RelativeLayout>

@@ -81,7 +81,6 @@ public class CommandActivity extends Activity {
         setContentView(R.layout.activity_command);
         activity = this;
         initTelecommande();
-        initToolbars();
     }
 
     private void initTelecommande()
@@ -129,9 +128,6 @@ public class CommandActivity extends Activity {
             public void onClick(View v) {
                 gson = new JsonObject();
                 openDialog();
-                gson = new JsonObject();
-                gson.addProperty("text", testText);
-                sendTest(gson);
             }
         });
 
@@ -179,7 +175,7 @@ public class CommandActivity extends Activity {
                 if (response.isSuccessful()) {
                     Toast.makeText(activity, getString(R.string.success_send), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_get_commands), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
@@ -199,7 +195,7 @@ public class CommandActivity extends Activity {
                         currentSettings = Settings.init(settingsJson.get("attributes").getAsJsonObject());
                         refreshView();
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetCommands), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_get_commands), Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -212,7 +208,7 @@ public class CommandActivity extends Activity {
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -252,7 +248,7 @@ public class CommandActivity extends Activity {
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -282,13 +278,13 @@ public class CommandActivity extends Activity {
 
     private void switchSarah(Boolean b) {
         if(b) {
-            muteBtn.setImageResource(R.drawable.ic_sleep_off_white_48dp);
-            sleepText.setVisibility(View.VISIBLE);
-            wakeText.setVisibility(View.GONE);
-        } else {
             muteBtn.setImageResource(R.drawable.ic_sleep_white_48dp);
             sleepText.setVisibility(View.GONE);
             wakeText.setVisibility(View.VISIBLE);
+        } else {
+            muteBtn.setImageResource(R.drawable.ic_sleep_off_white_48dp);
+            sleepText.setVisibility(View.VISIBLE);
+            wakeText.setVisibility(View.GONE);
         }
     }
 
@@ -437,6 +433,9 @@ public class CommandActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 testText = subEditText.getText().toString();
                 testText = testText.replaceAll("\\.", " poin ");
+                gson = new JsonObject();
+                gson.addProperty("text", testText);
+                sendTest(gson);
             }
         });
 

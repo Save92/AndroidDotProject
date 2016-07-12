@@ -31,6 +31,10 @@ public class CurrentUser {
     public static final String IS_APPROVED_KEY = "isApproved";
     public static final String ADMIN = "admin";
     public static final String PASSWORD_KEY = "password";
+    public static final String RECONNECT_KEY = "reconnect";
+    public static final String LOGIN_SHOW_KEY = "login_dialog";
+
+
 
 
     private static CurrentUser CurrentUserInstance = null;
@@ -193,12 +197,6 @@ public class CurrentUser {
         return  error;
     }
 
-    public static Boolean isLogin() {
-        if(CurrentUser.getCurrentUserId() != 0 && CurrentUser.getToken() != null &&!CurrentUser.getToken().isEmpty() && CurrentUser.getToken().length() > 0) {
-            return true;
-        }
-        return false;
-    }
 
     public static void saveRemember(Boolean checked) {
         session = context.getSharedPreferences(SESSION_FILENAME, 0);

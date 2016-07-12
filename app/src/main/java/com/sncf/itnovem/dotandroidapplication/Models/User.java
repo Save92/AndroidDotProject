@@ -52,6 +52,33 @@ public class User implements Parcelable {
                 token, myObject.get("admin").getAsBoolean(), id);
     }
 
+    public static User init(Integer id, JsonObject myObject, String password) {
+        String email = "";
+        String avatar = "";
+        String first = "";
+        String last = "";
+        String token = "";
+        if(!myObject.get("email").isJsonNull()) {
+            email = myObject.get("email").getAsString();
+        }
+        if(!myObject.get("avatar").isJsonNull()) {
+            avatar = myObject.get("avatar").getAsString();
+        }
+        if(!myObject.get("firstname").isJsonNull()) {
+            first = myObject.get("firstname").getAsString();
+        }
+        if(!myObject.get("lastname").isJsonNull()) {
+            last = myObject.get("lastname").getAsString();
+        }
+        if(!myObject.get("token").isJsonNull()) {
+            token = myObject.get("token").getAsString();
+        }
+
+
+        return new User(email, myObject.get("approved").getAsBoolean(), avatar, first, last,
+                token, myObject.get("admin").getAsBoolean(), id, password);
+    }
+
     public User(CurrentUser current) {
         this.email = current.getEmail();
         if(!current.getPassword().isEmpty()) {
@@ -67,8 +94,8 @@ public class User implements Parcelable {
 
     }
 
-    public User(String email, Boolean approved, String avatarPath,
-                String firstname, String lastname, Integer userId, String token, Boolean admin ) {
+    public User(String email,Boolean approved, String avatarPath,
+                String firstname, String lastname,String token, Boolean admin, Integer userId, String password ) {
         if(email.length() > 0 && approved != null && token.length() > 0 && userId != null) {
             this.email = email;
             if(avatarPath.length() > 0) {
@@ -79,6 +106,9 @@ public class User implements Parcelable {
             }
             if(firstname.length() > 0) {
                 this.firstname = firstname;
+            }
+            if(password.length() > 0) {
+                this.password = password;
             }
             this.approved = approved;
             this.token = token;

@@ -69,7 +69,6 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         activity = this;
-        initToolbars();
         durationSeekBar = (SeekBar) findViewById(R.id.seekBarDuration);
         seekBarValue = (TextView) findViewById(R.id.seekBarValue);
         radiogroup =  (RadioGroup) findViewById(R.id.radioGroupPriority);
@@ -184,7 +183,7 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                         myIntent.putExtra("notification", myNotif);
                         startActivity(myIntent);
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorCreateReminders), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_create_reminders), Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -197,7 +196,7 @@ public class CreateEventActivity extends AppCompatActivity implements CalendarDa
                 builder.setTitle(R.string.info);
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override

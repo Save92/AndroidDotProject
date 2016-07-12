@@ -1,157 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sncf.itnovem.dotandroidapplication.UpdateUserActivity">
-
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <include layout="@layout/app_bar_profil" android:id="@+id/app_bar_profil"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/firstname"
-        android:id="@+id/firstnameLabel"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_alignStart="@+id/app_bar_profil"
-        android:layout_marginTop="10dp"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/firstname"
-        android:layout_alignTop="@+id/firstnameLabel"
-        android:layout_alignParentEnd="true"
-        android:lines="1"
-        android:layout_toEndOf="@+id/firstnameLabel"
-        android:layout_marginStart="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/lastname"
-        android:id="@+id/lastnamelabel"
-        android:layout_below="@+id/firstname"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lastnameText"
-        android:layout_below="@+id/firstname"
-        android:lines="1"
-        android:layout_alignEnd="@+id/firstname"
-        android:layout_marginStart="10dp"
-        android:layout_alignTop="@+id/lastnamelabel"
-        android:layout_toEndOf="@+id/lastnamelabel" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/email_text"
-        android:id="@+id/emailText"
-        android:layout_below="@+id/lastnameText"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:id="@+id/emailValue"
-        android:layout_below="@+id/emailText"
-        android:lines="1"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/old_psw_label"
-        android:id="@+id/old_psw_label"
-        android:layout_below="@+id/emailValue"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/oldPswText"
-        android:layout_below="@+id/old_psw_label"
-        android:lines="1"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/psw_label"
-        android:id="@+id/newPasswordConfirm"
-        android:layout_below="@+id/oldPswText"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/newPasswordText"
-        android:layout_below="@+id/newPasswordConfirm"
-        android:layout_alignEnd="@+id/oldPswText"
-        android:lines="1"
-        android:layout_alignParentStart="true" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/psw_new_label"
-        android:id="@+id/newPassword"
-        android:layout_below="@+id/newPasswordText"
-        android:lines="1"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:lines="1"
-        android:ems="10"
-        android:id="@+id/newPasswordConfirmText"
-        android:layout_below="@+id/newPassword"
-        android:layout_alignEnd="@+id/newPasswordText"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/save"
-        android:id="@+id/saveBtn"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:layout_below="@+id/newPasswordConfirmText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/app_bar_profil"
-        android:id="@+id/linearLayout3">
-        <ImageView
-            android:layout_width="wrap_content"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/avatar"
-            android:contentDescription="avatar"
-            android:scaleType="centerCrop"
-            />
-    </LinearLayout>
+            tools:context="com.sncf.itnovem.dotandroidapplication.UpdateUserActivity">
 
-</RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout3">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/avatar"
+                    android:contentDescription="avatar"
+                    android:scaleType="centerCrop"
+                    />
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/firstname"
+                android:id="@+id/firstnameLabel"
+                android:layout_below="@+id/linearLayout3"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/firstname"
+                android:layout_alignTop="@+id/firstnameLabel"
+                android:layout_alignParentEnd="true"
+                android:lines="1"
+                android:layout_toEndOf="@+id/firstnameLabel"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/lastname"
+                android:id="@+id/lastnamelabel"
+                android:layout_below="@+id/firstname"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lastnameText"
+                android:layout_below="@+id/firstname"
+                android:lines="1"
+                android:layout_alignEnd="@+id/firstname"
+                android:layout_marginStart="10dp"
+                android:layout_alignTop="@+id/lastnamelabel"
+                android:layout_toEndOf="@+id/lastnamelabel" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/email_text"
+                android:id="@+id/emailText"
+                android:layout_below="@+id/lastnameText"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:id="@+id/emailValue"
+                android:layout_below="@+id/emailText"
+                android:lines="1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/old_psw_label"
+                android:id="@+id/old_psw_label"
+                android:layout_below="@+id/emailValue"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/oldPswText"
+                android:layout_below="@+id/old_psw_label"
+                android:lines="1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/psw_label"
+                android:id="@+id/newPasswordConfirm"
+                android:layout_below="@+id/oldPswText"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/newPasswordText"
+                android:layout_below="@+id/newPasswordConfirm"
+                android:layout_alignEnd="@+id/oldPswText"
+                android:lines="1"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/psw_new_label"
+                android:id="@+id/newPassword"
+                android:layout_below="@+id/newPasswordText"
+                android:lines="1"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:lines="1"
+                android:ems="10"
+                android:id="@+id/newPasswordConfirmText"
+                android:layout_below="@+id/newPassword"
+                android:layout_alignEnd="@+id/newPasswordText"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:id="@+id/saveBtn"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:layout_below="@+id/newPasswordConfirmText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"/>
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

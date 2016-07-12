@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Start\'it Vocal Assistant</string>
+    <string name="app_name">D.O.T</string>
 
     <!-- Login page -->
     <string name="login_title">Login</string>
@@ -10,9 +10,21 @@
     <string name="create_btn">Créer un compte</string>
     <string name="remember_me">Se souvenir de moi</string>
     <string name="reconnexion_needed">Vous devez vous reconnecter</string>
+    <string name="automatic_connexion">Souhaitez vous vous connecter automatiquement lors des prochaines ouvertures de l\'application ?</string>
+    <string name="remember_connexion">Ne pas me connecter automatiquement mais se souvenir de moi</string>
+
+
+
 
     <!-- Alert Dialog Login page -->
     <string name="alert_text">L\'Administrateur n\'a pas validé votre inscription, vous ne pouvez donc pas vous connecter.</string>
+    <string name="login_choice">Connexion automatique</string>
+    <string name="dont_show_again">Ne plus afficher</string>
+
+    <!-- Alert Dialog Logout-->
+    <string name="logout_choice">Logout</string>
+    <string name="remember_me_logout">Me reconnecter automatiquement à la prochaine ouverture de l\'application :</string>
+    <string name="change_user_logout">Se connecter avec un autre utilisateur :</string>
 
     <!-- signup page -->
     <string name="password_in">Saisir le mot de passe*</string>
@@ -23,30 +35,35 @@
 
 
     <!-- Erreurs -->
-    <string name="errorInvalidPassword">Mot de passe incorrect (6 caractères minimum)</string>
-    <string name="errorInvalidConfirmPassword">Les mots de passes ne correspondent pas</string>
-    <string name="errorInvalidOldPassword">Mot de passe faux</string>
-    <string name="errorMissingPassword">Le mot de passe doit être saisie</string>
-    <string name="errorInvalidEmail">Email non valide</string>
-    <string name="errorConnexion">Erreur lors de la connexion</string>
-    <string name="errorNetwork">Internet n\'est pas disponible. Veuillez vérifier votre connexion internet et réessayer</string>
-    <string name="errorFirstnameRequired">Le prénom est obligatoire</string>
-    <string name="errorLastnameRequired">Le nom est obligatoire</string>
-    <string name="errorGetCommands">Erreur lors de la récupération des commandes vocales</string>
-    <string name="errorGetReminders">Erreur lors de la récupération des notifications</string>
-    <string name="errorCreateReminders">Erreur lors de la création de la notification</string>
-    <string name="errorGetSettings">Erreur lors de la récupération des commandes</string>
-    <string name="errorSignUp">Erreur lors de la création de l\'utilisateur</string>
-    <string name="errorUpdateUser">Erreur lors de la modification de l\'utilisateur</string>
-    <string name="errorGetUser">Erreur lors de la récupération de l\'utilisateur</string>
+    <string name="error_invalid_password">Mot de passe incorrect (6 caractères minimum)</string>
+    <string name="error_invalid_confirm_password">Les mots de passes ne correspondent pas</string>
+    <string name="error_invalid_old_password">Mot de passe faux</string>
+    <string name="error_missing_password">Le mot de passe doit être saisie</string>
+    <string name="error_invalid_email">Email non valide</string>
+    <string name="error_connexion">Erreur lors de la connexion</string>
+    <string name="error_connexion_authorized">Erreur lors de la connexion, demander à l\'admin si votre compte a été approuvé</string>
+
+
+    <string name="error_network">Internet n\'est pas disponible. Veuillez vérifier votre connexion internet et réessayer</string>
+    <string name="error_firstname_required">Le prénom est obligatoire</string>
+    <string name="error_lastname_required">Le nom est obligatoire</string>
+    <string name="error_get_commands">Erreur lors de la récupération des commandes vocales</string>
+    <string name="error_get_reminders">Erreur lors de la récupération des notifications</string>
+    <string name="error_create_reminders">Erreur lors de la création de la notification</string>
+    <string name="error_get_settings">Erreur lors de la récupération des commandes</string>
+    <string name="error_sign_up">Erreur lors de la création de l\'utilisateur</string>
+    <string name="error_update_user">Erreur lors de la modification de l\'utilisateur</string>
+    <string name="error_get_user">Erreur lors de la récupération de l\'utilisateur</string>
     <string name="error_duration">Durée obligatoire</string>
     <string name="error_date">Date obligatoire</string>
     <string name="error_time">Heure obligatoire</string>
     <string name="error_priotity">Priorité obligatoire</string>
+    <string name="error_get_user_info">Erreur lors de la récupération de vos données. Veuilez vous reconnecter</string>
 
     <!-- Success messages -->
     <string name="success_created_notif">Notification enregistrée</string>
     <string name="success_send">Envoyé</string>
+    <string name="user_created">Utilisateur créé</string>
 
     <!-- Informations-->
     <string name="loading">Chargement...</string>
@@ -57,6 +74,9 @@
     <string name="info">Information</string>
     <string name="cancel">Annuler</string>
     <string name="double_click_for_exit">Veuillez cliquer une seconde fois pour quitter</string>
+    <string name="double_click_for_exit_or_long">Veuillez cliquer une seconde fois pour quitter ou rester appuyé pour voir les options</string>
+
+
 
     <!-- Titre page -->
     <string name="image_home">Dot project</string>
@@ -70,6 +90,8 @@
     <string name="title_activity_main">D.O.T</string>
     <string name="title_activity_login">Connexion</string>
     <string name="notification_detail_activity">Détail notification</string>
+    <string name="user_detail_activity">Détail utilisateur</string>
+
 
     <!-- Télécommande -->
     <string name="telecommande_title">Télécommande</string>

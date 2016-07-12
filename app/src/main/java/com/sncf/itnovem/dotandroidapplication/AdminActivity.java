@@ -55,7 +55,6 @@ public class AdminActivity extends AppCompatActivity implements UserRecyclerAdap
         }
         setContentView(R.layout.activity_admin);
         activity = this;
-        initToolbar();
         userRecyclerView = (RecyclerView) findViewById(R.id.usersRecycleView);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
@@ -100,7 +99,7 @@ public class AdminActivity extends AppCompatActivity implements UserRecyclerAdap
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
                 builder.setTitle(getString(R.string.info));
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override

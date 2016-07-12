@@ -61,11 +61,20 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
         activity = this;
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-        initToolbars();
         mRecyclerView = (RecyclerView) findViewById(R.id.commandesRecycleView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         getCommandList();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     public void getCommandList() {
@@ -88,7 +97,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
                         mRecyclerView.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetSettings), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_get_settings), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 }
@@ -104,7 +113,7 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override

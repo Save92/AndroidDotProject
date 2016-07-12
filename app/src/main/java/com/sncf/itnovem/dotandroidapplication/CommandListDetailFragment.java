@@ -49,12 +49,6 @@ public class CommandListDetailFragment extends Fragment {
     }
 
     @Override
-    public void onViewStateRestored(Bundle b) {
-        super.onViewStateRestored(b);
-        initToolbar();
-    }
-
-    @Override
     public void onCreate(Bundle inState)
     {
         super.onCreate(inState);
@@ -62,11 +56,21 @@ public class CommandListDetailFragment extends Fragment {
         if(getArguments() != null) {
             currentCommand = getArguments().getParcelable("command");
         }
-        initToolbar();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void initToolbar() {
-        toolbarTop = (Toolbar) super.getActivity().findViewById(R.id.app_bar);
+
+        toolbarTop = (Toolbar) getActivity().findViewById(R.id.app_bar);
         TextView titleBar = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
         titleBar.setText(currentCommand.getName());
         titleBar.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
@@ -100,7 +104,6 @@ public class CommandListDetailFragment extends Fragment {
         descriptions = (RecyclerView) view.findViewById(R.id.commandesDetailRecycleView);
         descriptions.setLayoutManager(new LinearLayoutManager(this.getContext()));
         descriptions.addItemDecoration(new SimpleDividerItemDecoration(this.getContext()));
-        initToolbar();
         setFragmentInfo();
         return view;
     }

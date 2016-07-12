@@ -56,7 +56,6 @@ public class UserDetailActivity extends AppCompatActivity {
         currentUser = new User();
         currentUser =  myIntent.getParcelableExtra("user");
         activity = this;
-        initToolbars();
         initView();
     }
 
@@ -74,30 +73,30 @@ public class UserDetailActivity extends AppCompatActivity {
         approved = (CheckBox) findViewById(R.id.isApproved);
         password = (EditText) findViewById(R.id.passwordValue);
         saveBtn = (Button) findViewById(R.id.saveBtn);
-        displayCurrentUser();
+        displayUser();
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkIfValid()) {
-                    saveCurrentUser();
+                    saveUser();
                 }
             }
         });
     }
 
-    private void saveCurrentUser() {
-        User myUser = currentUser;
-        myUser.setAdmin(admin.isChecked());
-        myUser.setApproved(approved.isChecked());
-        myUser.setFirstname(firstname.getText().toString());
-        myUser.setLastname(lastname.getText().toString());
-        myUser.setEmail(email.getText().toString());
+    private void saveUser() {
+        User user = currentUser;
+        user.setAdmin(admin.isChecked());
+        user.setApproved(approved.isChecked());
+        user.setFirstname(firstname.getText().toString());
+        user.setLastname(lastname.getText().toString());
+        user.setEmail(email.getText().toString());
         if(password.getText() != null && !password.getText().toString().isEmpty()){
-            myUser.setPassword(password.getText().toString().replaceAll("\"", ""));
+            user.setPassword(password.getText().toString().replaceAll("\"", ""));
         }
         if (NetworkUtil.checkDeviceConnected(this)) {
             dotService = ServiceGenerator.createService(DotService.class, API.RESTAPIURL);
-            Call<JsonObject> call = dotService.updateUser(myUser.getUserId(), myUser, CurrentUser.getToken(), CurrentUser.getEmail());
+            Call<JsonObject> call = dotService.updateUser(user.getUserId(), user, CurrentUser.getToken(), CurrentUser.getEmail());
             call.enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -107,7 +106,7 @@ public class UserDetailActivity extends AppCompatActivity {
                         currentUser = user;
                         finish();
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetUser), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_get_user), Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
@@ -119,7 +118,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -137,15 +136,15 @@ public class UserDetailActivity extends AppCompatActivity {
     private Boolean checkIfValid() {
         int error = 0;
         if(email.getText() == null || !isValidEmail(email.getText().toString())) {
-            email.setError(getResources().getString(R.string.errorInvalidEmail));
+            email.setError(getResources().getString(R.string.error_invalid_email));
             error = 1;
         }
         if(firstname.getText() == null || firstname.getText().length() == 0) {
-            firstname.setError(getResources().getString(R.string.errorFirstnameRequired));
+            firstname.setError(getResources().getString(R.string.error_firstname_required));
             error = 1;
         }
         if(lastname.getText() == null || lastname.getText().length() == 0) {
-            lastname.setError(getResources().getString(R.string.errorLastnameRequired));
+            lastname.setError(getResources().getString(R.string.error_lastname_required));
             error = 1;
         }
         if(error == 0) {
@@ -162,7 +161,7 @@ public class UserDetailActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    private  void displayCurrentUser() {
+    private  void displayUser() {
         firstname.setText(currentUser.getFirstname());
         lastname.setText(currentUser.getLastname());
         email.setText(currentUser.getEmail());
@@ -179,7 +178,7 @@ public class UserDetailActivity extends AppCompatActivity {
         }
         toolbarTop.setNavigationIcon(R.drawable.ic_navigate_before_white_36dp);
         TextView title = (TextView) toolbarTop.findViewById(R.id.app_bar_title);
-        title.setText(R.string.notification_detail_activity);
+        title.setText(R.string.user_detail_activity);
         title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbarTop.setTitle(null);
         setActionBar(toolbarTop);

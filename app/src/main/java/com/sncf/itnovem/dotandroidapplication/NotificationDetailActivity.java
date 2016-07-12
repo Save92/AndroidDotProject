@@ -49,7 +49,6 @@ public class NotificationDetailActivity extends Activity {
         currentNotif = new Notification();
         currentNotif =  myIntent.getParcelableExtra("notification");
         activity = this;
-        initToolbars();
 
         title = (TextView) findViewById(R.id.titre);
         date = (TextView) findViewById(R.id.date_creation);

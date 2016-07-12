@@ -80,7 +80,6 @@ public class UpdateUserActivity extends Activity {
         currentUser = CurrentUser.getInstance(getApplicationContext());
         session = getSharedPreferences(CurrentUser.SESSION_FILENAME, MODE_PRIVATE);
         initUser();
-        initToolbar();
         saveBtn = (Button) findViewById(R.id.saveBtn);
         oldPsw = (EditText) findViewById(R.id.oldPswText);
         newPsw = (EditText) findViewById(R.id.newPasswordText);
@@ -97,6 +96,13 @@ public class UpdateUserActivity extends Activity {
             }
         });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initToolbar();
+    }
+
 
     private void saveCurrentUser() {
         CurrentUser.setEmail(email.getText().toString());
@@ -122,7 +128,7 @@ public class UpdateUserActivity extends Activity {
                         CurrentUser.setCurrentUser(user);
                         CurrentUser.saveCurrentUserSession();
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorUpdateUser), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_update_user), Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -135,7 +141,7 @@ public class UpdateUserActivity extends Activity {
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -153,24 +159,24 @@ public class UpdateUserActivity extends Activity {
     private Boolean checkIfValid() {
         int error = 0;
         if(email.getText() == null || !isValidEmail(email.getText().toString())) {
-            email.setError(getResources().getString(R.string.errorInvalidEmail));
+            email.setError(getResources().getString(R.string.error_invalid_email));
             error = 1;
         }
         if(firstname.getText() == null || firstname.getText().length() == 0) {
-            firstname.setError(getResources().getString(R.string.errorFirstnameRequired));
+            firstname.setError(getResources().getString(R.string.error_firstname_required));
             error = 1;
         }
         if(lastname.getText() == null || lastname.getText().length() == 0) {
-            lastname.setError(getResources().getString(R.string.errorLastnameRequired));
+            lastname.setError(getResources().getString(R.string.error_lastname_required));
             error = 1;
         }
         if(oldPsw.getText() == null || oldPsw.getText().length() == 0) {
             if( (newPsw.getText() != null && newPsw.getText().length() > 0)|| (newPswConfirm.getText() != null && newPswConfirm.getText().length() > 0)) {
                 error = 1;
-                oldPsw.setError(getResources().getString(R.string.errorMissingPassword));
+                oldPsw.setError(getResources().getString(R.string.error_missing_password));
             } else if ((newPsw.getText() != null && newPsw.getText().length() > 0)|| (newPswConfirm.getText() != null && newPswConfirm.getText().length() > 0) && !isValidPassword(oldPsw.getText().toString())){
                 error = 1;
-                oldPsw.setError(getResources().getString(R.string.errorInvalidPassword));
+                oldPsw.setError(getResources().getString(R.string.error_invalid_password));
             }
         }
         if((newPsw.getText() != null && newPsw.getText().length() > 0)|| (newPswConfirm.getText() != null && newPswConfirm.getText().length() > 0)) {
@@ -178,30 +184,30 @@ public class UpdateUserActivity extends Activity {
             error = 1;
             if(oldPsw.getText() == null || oldPsw.getText().length() == 0) {
                 error = 1;
-                oldPsw.setError(getResources().getString(R.string.errorMissingPassword));
+                oldPsw.setError(getResources().getString(R.string.error_missing_password));
             } else if (!CurrentUser.getPassword().equals(oldPsw.getText().toString())) {
                 error = 1;
-                oldPsw.setError(getResources().getString(R.string.errorMissingPassword));
+                oldPsw.setError(getResources().getString(R.string.error_missing_password));
             }
             if(!isValidPassword(newPsw.getText().toString())) {
                 error = 1;
-                newPsw.setError(getResources().getString(R.string.errorInvalidOldPassword));
+                newPsw.setError(getResources().getString(R.string.error_invalid_old_password));
             }
             if(!isValidPassword(newPswConfirm.getText().toString())) {
                 error = 1;
-                newPswConfirm.setError(getResources().getString(R.string.errorInvalidPassword));
+                newPswConfirm.setError(getResources().getString(R.string.error_invalid_password));
             }
             if(!isSamePassword(newPsw.getText().toString(), newPswConfirm.getText().toString())) {
                 error = 1;
-                newPsw.setError(getResources().getString(R.string.errorInvalidConfirmPassword));
-                newPswConfirm.setError(getResources().getString(R.string.errorInvalidConfirmPassword));
+                newPsw.setError(getResources().getString(R.string.error_invalid_confirm_password));
+                newPswConfirm.setError(getResources().getString(R.string.error_invalid_confirm_password));
             }
         } else if( (newPsw.getText() != null && newPswConfirm.getText() == null)) {
             error = 1;
-            newPswConfirm.setError(getResources().getString(R.string.errorMissingPassword));
+            newPswConfirm.setError(getResources().getString(R.string.error_missing_password));
         } else if( (newPsw.getText() == null && newPswConfirm.getText() != null)) {
             error = 1;
-            newPsw.setError(getResources().getString(R.string.errorMissingPassword));
+            newPsw.setError(getResources().getString(R.string.error_missing_password));
         }
         if(error == 0) {
             return true;

@@ -58,7 +58,6 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         activity = this;
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-        initToolbars();
         addBtn = (FloatingActionButton) findViewById(R.id.addNotifBtn);
         mRecyclerView = (RecyclerView) findViewById(R.id.notificationsRecycleView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -96,7 +95,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
                         mRecyclerView.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorGetReminders), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_get_reminders), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 }
@@ -112,7 +111,7 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override

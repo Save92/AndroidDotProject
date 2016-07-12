@@ -7,9 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonObject;
+import com.sncf.itnovem.dotandroidapplication.Models.User;
 import com.sncf.itnovem.dotandroidapplication.services.API;
 import com.sncf.itnovem.dotandroidapplication.services.DotService;
 import com.sncf.itnovem.dotandroidapplication.services.ServiceGenerator;
@@ -47,7 +52,11 @@ public class LoginActivity extends Activity {
     private DotService dotService;
     private Activity activity;
     private SharedPreferences session;
+    private static SharedPreferences.Editor editor;
     private CurrentUser currentUser;
+    private Boolean rememberCheck;
+    private Boolean autoConnect;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +74,7 @@ public class LoginActivity extends Activity {
         toolbar.getMenu();
         setActionBar(toolbar);
 
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         email = (TextView) findViewById(R.id.emailText);
         password = (TextView) findViewById(R.id.passwordText);
@@ -74,11 +84,35 @@ public class LoginActivity extends Activity {
         progress = new ProgressDialog(this);
         progress.setIndeterminateDrawable(getDrawable(R.drawable.circle_progressbar_custom));
         progress.setMessage(getResources().getString(R.string.loading));
-        Boolean rememberCheck =  session.getBoolean(CurrentUser.REMEMBER_KEY, false);
+        rememberCheck =  session.getBoolean(CurrentUser.REMEMBER_KEY, false);
+        rememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(isChecked) {
+                    rememberCheck = true;
+                } else {
+                    rememberCheck = false;
+                    session.getBoolean(CurrentUser.LOGIN_SHOW_KEY, true);
+                }
+            }
+        });
+        autoConnect = session.getBoolean(CurrentUser.RECONNECT_KEY, false);
         if(rememberCheck) {
             rememberMe.setChecked(rememberCheck);
             email.setText(session.getString(CurrentUser.EMAIL_KEY, "").replaceAll("\"", ""));
             password.setText(CurrentUser.getSavedPassword());
+            if(autoConnect) {
+                progressBar.setVisibility(View.INVISIBLE);
+                if (!session.getString(CurrentUser.EMAIL_KEY, "").replaceAll("\"", "").isEmpty() && !CurrentUser.getSavedPassword().isEmpty()) {
+                    if (autoConnect) {
+                        emailText = email.getText().toString();
+                        passwordText = password.getText().toString();
+                        login();
+                    }
+                } else {
+                    Toast.makeText(activity, getString(R.string.error_get_user_info), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -88,19 +122,22 @@ public class LoginActivity extends Activity {
                 emailText = email.getText().toString();
 
                 if (!isValidEmail(emailText)) {
-                    email.setError(getResources().getString(R.string.errorInvalidEmail));
+                    email.setError(getResources().getString(R.string.error_invalid_email));
                     errors = true;
                 }
 
                 passwordText = password.getText().toString();
 
                 if (!isValidPassword(passwordText)) {
-                    password.setError(getResources().getString(R.string.errorInvalidPassword));
+                    password.setError(getResources().getString(R.string.error_invalid_password));
                     errors = true;
                 }
-
-                if (!errors) {
-                    login();
+                if(rememberCheck && session.getBoolean(CurrentUser.LOGIN_SHOW_KEY, true)) {
+                    openDialog();
+                } else {
+                    if (!errors) {
+                        login();
+                    }
                 }
             }
         });
@@ -108,22 +145,22 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(activity, SignUpActivity.class);
-                startActivity(signUpIntent);
+                startActivityForResult(signUpIntent, 1);
             }
         });
+    }
 
-        if(CurrentUser.getInstance(activity) != null &&  CurrentUser.isLogin()) {
-            //Log.v(TAG, "isLogin");
-            //TODO Appel API pour vérifier si le token est valide
-            // redirect
-        } else if (CurrentUser.awake()) {
-           // Log.v(TAG, "awake");
-            //TODO Appel API pour vérifier si le token est valide
-            // redirect
-        } else {
-            //Log.v(TAG, "login");
-            if(rememberMe.isChecked()) {
-                CurrentUser.saveCurrentUserSession();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                User user = data.getParcelableExtra("user");
+                email.setText(user.getEmail());
+                password.setText(user.getPassword());
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
             }
         }
     }
@@ -145,17 +182,27 @@ public class LoginActivity extends Activity {
                             CurrentUser.saveRemember(true);
                             CurrentUser.savePassword(passwordText);
                             CurrentUser.saveCurrentUserSession();
+                        } else {
+                            editor = session.edit();
+                            editor.putBoolean(CurrentUser.LOGIN_SHOW_KEY, true);
+                            editor.putBoolean(CurrentUser.REMEMBER_KEY, false);
+                            editor.apply();
                         }
                         Intent mainIntent = new Intent(activity, MainActivity.class);
                         if (CurrentUser.getIsApproved()) {
+                            progressBar.setVisibility(View.GONE);
                             startActivity(mainIntent);
                             finish();
                         } else {
                             showDialog();
                         }
                     } else {
-                        Toast.makeText(activity, "Error : " + getResources().getString(R.string.errorConnexion), Toast.LENGTH_SHORT).show();
-                    }
+                        if(response.code()==401){
+                            Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_connexion_authorized), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(activity, "Error : " + getResources().getString(R.string.error_connexion), Toast.LENGTH_SHORT).show();
+                        }
+                     }
                 }
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
@@ -167,7 +214,7 @@ public class LoginActivity extends Activity {
                 builder.setTitle(getString(R.string.info));
 
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(getResources().getString(R.string.errorNetwork));
+                builder.setMessage(getResources().getString(R.string.error_network));
                 final android.support.v7.app.AlertDialog alertDialog = builder.create();
                 builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -197,16 +244,6 @@ public class LoginActivity extends Activity {
 
     }
 
-    public boolean verifyCheck() {
-        return session.getBoolean(CurrentUser.REMEMBER_KEY, false);
-    }
-
-    public void reconnexion() {
-        Toast.makeText(activity, getString(R.string.reconnexion_needed), Toast.LENGTH_SHORT).show();
-        Bundle bundle = new Bundle();
-        onCreate(bundle);
-    }
-
     // validating email id
     private boolean isValidEmail(String email) {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -224,4 +261,43 @@ public class LoginActivity extends Activity {
         }
         return false;
     }
+
+    private void openDialog(){
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View subView = inflater.inflate(R.layout.login_choice, null);
+        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        final CheckBox dontShow = (CheckBox) subView.findViewById(R.id.checkBoxDontshowAgain);
+        builder.setTitle(getString(R.string.login_choice));
+        builder.setView(subView);
+
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editor = session.edit();
+                editor.putBoolean(CurrentUser.RECONNECT_KEY, true);
+                editor.apply();
+                if(dontShow.isChecked()) {
+                    editor.putBoolean(CurrentUser.LOGIN_SHOW_KEY, false);
+                    editor.apply();
+                }
+                if (!errors) {
+                    login();
+                }
+            }
+        });
+
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editor = session.edit();
+                editor.putBoolean(CurrentUser.RECONNECT_KEY, false);
+                editor.apply();
+                if (!errors) {
+                    login();
+                }
+            }
+        });
+        builder.show();
+    }
+
 }
