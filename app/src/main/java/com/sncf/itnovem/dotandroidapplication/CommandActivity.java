@@ -412,8 +412,8 @@ public class CommandActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //logo clicked
-                Intent homeIntent = new Intent(activity, MainActivity.class);
-                startActivity(homeIntent);
+//                Intent homeIntent = new Intent(activity, MainActivity.class);
+//                startActivity(homeIntent);
                 activity.finish();
             }
         });

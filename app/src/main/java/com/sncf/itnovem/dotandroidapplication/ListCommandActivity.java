@@ -222,8 +222,8 @@ public class ListCommandActivity extends FragmentActivity implements ListCommand
             @Override
             public void onClick(View v) {
                 //logo clicked
-                Intent homeIntent = new Intent(activity, MainActivity.class);
-                startActivity(homeIntent);
+//                Intent homeIntent = new Intent(activity, MainActivity.class);
+//                startActivity(homeIntent);
                 activity.finish();
             }
         });

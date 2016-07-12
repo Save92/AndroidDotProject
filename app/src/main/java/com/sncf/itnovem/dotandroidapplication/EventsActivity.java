@@ -210,8 +210,8 @@ public class EventsActivity extends Activity implements RecyclerAdapter.Callback
         logoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeIntent = new Intent(activity, MainActivity.class);
-                startActivity(homeIntent);
+//                Intent homeIntent = new Intent(activity, MainActivity.class);
+//                startActivity(homeIntent);
                 activity.finish();
             }
         });
